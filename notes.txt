@@ -1,0 +1,16 @@
+Clion does not find the .bashrc variable UE4_ROOT.
+Workaround set in Vars.mk
+
+LibCarla.debug compiles and runs some test script.
+Very limited C++ debugging in carla/LibCarla/source/test/common/test_streaming.cpp
+carla/LibCarla/source/test/server/test_benchmark_streaming.cpp
+Doesn't spawn CARLA server.
+
+
+I might need to build UnrealEngine in debug with 
+make DebugSet
+
+CARLA
+make package  ARGS="--config=Debug --no-zip"
+
+objdump -h CarlaUE4-Linux-Shipping | grep debug
