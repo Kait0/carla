@@ -31,6 +31,9 @@
 #include <compiler/enable-ue4-macros.h>
 
 #include <thread>
+#include <cstdlib>
+#include <cerrno>
+#include <iostream>
 
 // =============================================================================
 // -- Static local methods -----------------------------------------------------
@@ -41,7 +44,17 @@ uint64_t FCarlaEngine::FrameCounter = 0;
 
 static uint32 FCarlaEngine_GetNumberOfThreadsForRPCServer()
 {
-  return std::max(std::thread::hardware_concurrency(), 4u) - 2u;
+  const char* max_threads_env_var = std::getenv("CARLA_SERVER_MAX_NUM_THREADS");
+  unsigned int max_threads = std::thread::hardware_concurrency();
+  if (max_threads_env_var) {
+    max_threads = static_cast<unsigned int>(std::strtoul(max_threads_env_var, nullptr, 10));
+    if (errno == ERANGE)
+    {
+      errno = 0;
+      std::cerr << "CARLA_SERVER_MAX_NUM_THREADS contains an invalid value, got  " << max_threads_env_var;
+    }
+  }
+  return std::max(max_threads, 4u) - 2u;
 }
 
 static TOptional<double> FCarlaEngine_GetFixedDeltaSeconds()

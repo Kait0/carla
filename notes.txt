@@ -14,3 +14,8 @@ CARLA
 make package  ARGS="--config=Debug --no-zip"
 
 objdump -h CarlaUE4-Linux-Shipping | grep debug
+
+https://github.com/carla-simulator/carla/issues/3322
+
+CARLA on office PC with -nullrhi => 86 threads
+After change in CarlaEngine.cpp => 74 threads
