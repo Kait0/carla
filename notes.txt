@@ -19,3 +19,9 @@ https://github.com/carla-simulator/carla/issues/3322
 
 CARLA on office PC with -nullrhi => 86 threads
 After change in CarlaEngine.cpp => 74 threads
+Using -RPCThreads=1 -StreamingThreads=1 -SecondaryThreads=1 => 71 threads
+
+Using -RPCThreads=1 -StreamingThreads=1 -SecondaryThreads=1 -nothreading with rendering => 12 threads 101 CPU
+Default 93 Threads, 265% CPU usage
+
+-workersthreadpool seems to be able to control unreal threads but doesn't seem to work.
