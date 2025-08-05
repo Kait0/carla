@@ -130,6 +130,8 @@ file(GLOB libcarla_server_sources
 # ==============================================================================
 # Create targets for debug and release in the same build type.
 # ==============================================================================
+# TODO BE: Debug linking
+target_link_libraries(carla_server PRIVATE dl)
 
 if (LIBCARLA_BUILD_RELEASE)
 
@@ -138,8 +140,6 @@ if (LIBCARLA_BUILD_RELEASE)
   target_include_directories(carla_server SYSTEM PRIVATE
       "${BOOST_INCLUDE_PATH}"
       "${RPCLIB_INCLUDE_PATH}")
-
-  target_link_libraries(carla_server PRIVATE dl)
 
   install(TARGETS carla_server DESTINATION lib OPTIONAL)
 
@@ -154,8 +154,6 @@ if (LIBCARLA_BUILD_DEBUG)
   target_include_directories(carla_server_debug SYSTEM PRIVATE
       "${BOOST_INCLUDE_PATH}"
       "${RPCLIB_INCLUDE_PATH}")
-
-  target_link_libraries(carla_server PRIVATE dl)
 
   install(TARGETS carla_server_debug DESTINATION lib OPTIONAL)
 

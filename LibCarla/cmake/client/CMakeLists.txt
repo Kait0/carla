@@ -316,6 +316,9 @@ if (LIBCARLA_BUILD_RELEASE)
 
 endif()
 
+# TODO BE: Debug linking
+target_link_libraries(carla_server PRIVATE dl)
+
 if (LIBCARLA_BUILD_DEBUG)
 
   add_library(carla_client${carla_target_postfix}_debug STATIC ${libcarla_sources})
