@@ -159,7 +159,7 @@ if (LIBCARLA_BUILD_DEBUG)
   install(TARGETS carla_server_debug DESTINATION lib OPTIONAL)
 
   # TODO BE: Debug linking
-  target_link_libraries(carla_server PRIVATE dl)
+  target_link_libraries(carla_server_debug PRIVATE dl)
 
   set_target_properties(carla_server_debug PROPERTIES COMPILE_FLAGS "${CMAKE_CXX_FLAGS_DEBUG}")
   target_compile_definitions(carla_server_debug PUBLIC -DBOOST_ASIO_ENABLE_BUFFER_DEBUGGING)
