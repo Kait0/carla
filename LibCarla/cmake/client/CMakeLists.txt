@@ -317,7 +317,7 @@ if (LIBCARLA_BUILD_RELEASE)
 endif()
 
 # TODO BE: Debug linking
-target_link_libraries(carla_server PRIVATE dl)
+target_link_libraries(carla_client${carla_target_postfix}_debug PRIVATE dl)
 
 if (LIBCARLA_BUILD_DEBUG)
 
