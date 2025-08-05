@@ -130,8 +130,6 @@ file(GLOB libcarla_server_sources
 # ==============================================================================
 # Create targets for debug and release in the same build type.
 # ==============================================================================
-# TODO BE: Debug linking
-target_link_libraries(carla_server PRIVATE dl)
 
 if (LIBCARLA_BUILD_RELEASE)
 
@@ -142,6 +140,9 @@ if (LIBCARLA_BUILD_RELEASE)
       "${RPCLIB_INCLUDE_PATH}")
 
   install(TARGETS carla_server DESTINATION lib OPTIONAL)
+
+  # TODO BE: Debug linking
+  target_link_libraries(carla_server PRIVATE dl)
 
   set_target_properties(carla_server PROPERTIES COMPILE_FLAGS "${CMAKE_CXX_FLAGS_RELEASE}")
 
@@ -156,6 +157,9 @@ if (LIBCARLA_BUILD_DEBUG)
       "${RPCLIB_INCLUDE_PATH}")
 
   install(TARGETS carla_server_debug DESTINATION lib OPTIONAL)
+
+  # TODO BE: Debug linking
+  target_link_libraries(carla_server PRIVATE dl)
 
   set_target_properties(carla_server_debug PROPERTIES COMPILE_FLAGS "${CMAKE_CXX_FLAGS_DEBUG}")
   target_compile_definitions(carla_server_debug PUBLIC -DBOOST_ASIO_ENABLE_BUFFER_DEBUGGING)
