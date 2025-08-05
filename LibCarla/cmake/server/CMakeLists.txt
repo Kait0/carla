@@ -139,6 +139,8 @@ if (LIBCARLA_BUILD_RELEASE)
       "${BOOST_INCLUDE_PATH}"
       "${RPCLIB_INCLUDE_PATH}")
 
+  target_link_libraries(carla_server PRIVATE dl)
+
   install(TARGETS carla_server DESTINATION lib OPTIONAL)
 
   set_target_properties(carla_server PROPERTIES COMPILE_FLAGS "${CMAKE_CXX_FLAGS_RELEASE}")
@@ -152,6 +154,8 @@ if (LIBCARLA_BUILD_DEBUG)
   target_include_directories(carla_server_debug SYSTEM PRIVATE
       "${BOOST_INCLUDE_PATH}"
       "${RPCLIB_INCLUDE_PATH}")
+
+  target_link_libraries(carla_server PRIVATE dl)
 
   install(TARGETS carla_server_debug DESTINATION lib OPTIONAL)
 
