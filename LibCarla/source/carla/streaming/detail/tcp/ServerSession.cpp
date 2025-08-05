@@ -18,6 +18,10 @@
 #include <atomic>
 #include <thread>
 
+// TODO BE debug
+#include <boost/stacktrace.hpp>
+#include <iostream>
+
 namespace carla {
 namespace streaming {
 namespace detail {
@@ -62,7 +66,12 @@ namespace tcp {
           boost::asio::post(_strand.context(), [=]() { callback(self); });
         } else {
           log_error("session", _session_id, ": error retrieving stream id :", ec.message());
+          // TODO BE debug
+          std::cerr << "LibCARLA ServerSession.cpp:\n" << std::endl;
+          std::cerr << "Stack trace:\n" << boost::stacktrace::stacktrace() << std::endl;
+          std::cerr << "Before CloseNow:\n" << std::endl;
           CloseNow(ec);
+          std::cerr << "After CloseNow:\n" << std::endl;
         }
       };
 
@@ -134,6 +143,7 @@ namespace tcp {
   }
 
   void ServerSession::CloseNow(boost::system::error_code ec) {
+    // TODO BE: The socket is only shutdown when there is no error. What happens when there is an error?
     _deadline.cancel();
     if (!ec)
     {

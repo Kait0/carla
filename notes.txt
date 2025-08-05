@@ -26,3 +26,14 @@ Default 93 Threads, 265% CPU usage
 
 -RPCThreads=1 -StreamingThreads=1 -SecondaryThreads=1 -workersthreadpool 1 => 46 threads 240% usage
 
+
+CARLA error:
+
+ERROR: session 209 : error retrieving stream id : End of file
+
+[2025.07.31-21.28.23:234][ 96]LogPhysicsCore: Error: PHYSX: (D:/Build/++UE4/Sync/Engine/Source/ThirdParty/PhysX3/PhysX_3.4/Source/PhysX/src/NpReadCheck.cpp 46) eINVALID_OPERATION : An API read call (getRigidBodyFlags) was made from thread -855285120 but PxScene::lockRead() was not called first, note that when PxSceneFlag::eREQUIRE_RW_LOCK is enabled all API reads and writes must be wrapped in the appropriate locks.
+[2025.07.31-21.28.23:234][ 96]LogPhysicsCore: Error: PHYSX: (D:/Build/++UE4/Sync/Engine/Source/ThirdParty/PhysX3/PhysX_3.4/Source/PhysX/src/NpWriteCheck.cpp 47) eINVALID_OPERATION : An API write call (wakeUp) was made from thread -855285120 but PxScene::lockWrite() was not called first, note that when PxSceneFlag::eREQUIRE_RW_LOCK is enabled all API reads and writes must be wrapped in the appropriate locks.
+[2025.07.31-21.28.23:235][ 96]LogPhysicsCore: Error: PHYSX: (D:/Build/++UE4/Sync/Engine/Source/ThirdParty/PhysX3/PhysX_3.4/Source/PhysX/src/NpReadCheck.cpp 46) eINVALID_OPERATION : An API read call (getRigidBodyFlags) was made from thread -855285120 but PxScene::lockRead() was not called first, note that when PxSceneFlag::eREQUIRE_RW_LOCK is enabled all API reads and writes must be wrapped in the appropriate locks.
+[2025.07.31-21.28.23:235][ 96]LogPhysicsCore: Error: PHYSX: (D:/Build/++UE4/Sync/Engine/Source/ThirdParty/PhysX3/PhysX_3.4/Source/PhysX/src/NpWriteCheck.cpp 47) eINVALID_OPERATION : An API write call (wakeUp) was made from thread -855285120 but PxScene::lockWrite() was not called first, note that when PxSceneFlag::eREQUIRE_RW_LOCK is enabled all API reads and writes must be wrapped in the appropriate locks.
+
+[2025.07.31-18.07.41:760][421]LogPhysicsCore: Error: PHYSX: (D:/Build/++UE4/Sync/Engine/Source/ThirdParty/PhysX3/PhysX_3.4/Source/PhysXVehicle/src/PxVehicleUpdate.cpp 4833) eINVALID_PARAMETER : PxVehicle4W does not obey the rule that the eFRONT_RIGHT/eREAR_RIGHT wheels are to the right of the eFRONT_LEFT/eREAR_LEFT wheels
