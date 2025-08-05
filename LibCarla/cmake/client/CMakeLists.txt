@@ -315,7 +315,7 @@ if (LIBCARLA_BUILD_RELEASE)
   endif (WIN32)
 
   # TODO BE: Debug linking
-  target_link_libraries(carla_client${carla_target_postfix} PRIVATE dl)
+  target_link_libraries(carla_client${carla_target_postfix} dl)
 
 endif()
 
@@ -358,7 +358,7 @@ if (LIBCARLA_BUILD_DEBUG)
   endif (WIN32)
 
   # TODO BE: Debug linking
-  target_link_libraries(carla_client${carla_target_postfix}_debug PRIVATE dl)
+  target_link_libraries(carla_client${carla_target_postfix}_debug dl)
 
   target_compile_definitions(carla_client${carla_target_postfix}_debug PUBLIC -DBOOST_ASIO_ENABLE_BUFFER_DEBUGGING)
 
