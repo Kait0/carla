@@ -314,10 +314,10 @@ if (LIBCARLA_BUILD_RELEASE)
 
   endif (WIN32)
 
-endif()
+  # TODO BE: Debug linking
+  target_link_libraries(carla_client${carla_target_postfix} PRIVATE dl)
 
-# TODO BE: Debug linking
-target_link_libraries(carla_client${carla_target_postfix}_debug PRIVATE dl)
+endif()
 
 if (LIBCARLA_BUILD_DEBUG)
 
@@ -356,6 +356,9 @@ if (LIBCARLA_BUILD_DEBUG)
     target_link_libraries(carla_client${carla_target_postfix}_debug "${RECAST_LIB_PATH}/libDetourCrowd.a")
 
   endif (WIN32)
+
+  # TODO BE: Debug linking
+  target_link_libraries(carla_client${carla_target_postfix}_debug PRIVATE dl)
 
   target_compile_definitions(carla_client${carla_target_postfix}_debug PUBLIC -DBOOST_ASIO_ENABLE_BUFFER_DEBUGGING)
 
