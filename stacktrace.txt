@@ -1,0 +1,32 @@
+ERROR: session 50 : error retrieving stream id : End of file
+LibCARLA ServerSession.cpp:
+
+Stack trace:
+
+ 0# 0x00000000115EBC9F in /scratch_local/rocky/custom_carla_0_9_15/carla/Dist/CARLA_Debug_0.9.15-354-g3fd2730b1-dirty/LinuxNoEditor/CarlaUE4/Binaries/Linux/CarlaUE4-Linux-Debug
+ Line 481 of "Runtime/Core/Public/Templates/UnrealTemplate.h" starts at address 0x54bedf8 <Forward<FEngineLoop::AppInit()::$_76&>(TRemoveReference<FEngineLoop::AppInit()::$_76&>::Type&)+8>
+    and ends at 0x12547f50 <InitializeStdOutDevice()::Impl::ExecCheckImplInternal()>.
+ 1# 0x00000000115EC98C in /scratch_local/rocky/custom_carla_0_9_15/carla/Dist/CARLA_Debug_0.9.15-354-g3fd2730b1-dirty/LinuxNoEditor/CarlaUE4/Binaries/Linux/CarlaUE4-Linux-Debug
+ Line 481 of "Runtime/Core/Public/Templates/UnrealTemplate.h" starts at address 0x54bedf8 <Forward<FEngineLoop::AppInit()::$_76&>(TRemoveReference<FEngineLoop::AppInit()::$_76&>::Type&)+8>
+    and ends at 0x12547f50 <InitializeStdOutDevice()::Impl::ExecCheckImplInternal()>.
+ 2# 0x00000000115ECCCA in /scratch_local/rocky/custom_carla_0_9_15/carla/Dist/CARLA_Debug_0.9.15-354-g3fd2730b1-dirty/LinuxNoEditor/CarlaUE4/Binaries/Linux/CarlaUE4-Linux-Debug
+ Line 481 of "Runtime/Core/Public/Templates/UnrealTemplate.h" starts at address 0x54bedf8 <Forward<FEngineLoop::AppInit()::$_76&>(TRemoveReference<FEngineLoop::AppInit()::$_76&>::Type&)+8>
+    and ends at 0x12547f50 <InitializeStdOutDevice()::Impl::ExecCheckImplInternal()>.
+ 3# boost::asio::detail::strand_service::do_dispatch(boost::asio::detail::strand_service::strand_impl*&, boost::asio::detail::scheduler_operation*) in /scratch_local/rocky/custom_carla_0_9_15/carla/Dist/CARLA_Debug_0.9.15-354-g3fd2730b1-dirty/LinuxNoEditor/CarlaUE4/Binaries/Linux/CarlaUE4-Linux-Debug
+ 4# 0x00000000115ECB1A in /scratch_local/rocky/custom_carla_0_9_15/carla/Dist/CARLA_Debug_0.9.15-354-g3fd2730b1-dirty/LinuxNoEditor/CarlaUE4/Binaries/Linux/CarlaUE4-Linux-Debug
+ Line 481 of "Runtime/Core/Public/Templates/UnrealTemplate.h" starts at address 0x54bedf8 <Forward<FEngineLoop::AppInit()::$_76&>(TRemoveReference<FEngineLoop::AppInit()::$_76&>::Type&)+8>
+    and ends at 0x12547f50 <InitializeStdOutDevice()::Impl::ExecCheckImplInternal()>.
+ 5# 0x00000000115EC55A in /scratch_local/rocky/custom_carla_0_9_15/carla/Dist/CARLA_Debug_0.9.15-354-g3fd2730b1-dirty/LinuxNoEditor/CarlaUE4/Binaries/Linux/CarlaUE4-Linux-Debug
+ 6# 0x0000000005DA2405 in /scratch_local/rocky/custom_carla_0_9_15/carla/Dist/CARLA_Debug_0.9.15-354-g3fd2730b1-dirty/LinuxNoEditor/CarlaUE4/Binaries/Linux/CarlaUE4-Linux-Debug
+ 7# 0x0000000005DA1D9D in /scratch_local/rocky/custom_carla_0_9_15/carla/Dist/CARLA_Debug_0.9.15-354-g3fd2730b1-dirty/LinuxNoEditor/CarlaUE4/Binaries/Linux/CarlaUE4-Linux-Debug
+ 8# 0x0000000005DA1913 in /scratch_local/rocky/custom_carla_0_9_15/carla/Dist/CARLA_Debug_0.9.15-354-g3fd2730b1-dirty/LinuxNoEditor/CarlaUE4/Binaries/Linux/CarlaUE4-Linux-Debug
+ 9# 0x0000000005DA173E in /scratch_local/rocky/custom_carla_0_9_15/carla/Dist/CARLA_Debug_0.9.15-354-g3fd2730b1-dirty/LinuxNoEditor/CarlaUE4/Binaries/Linux/CarlaUE4-Linux-Debug
+10# 0x0000000005DA1705 in /scratch_local/rocky/custom_carla_0_9_15/carla/Dist/CARLA_Debug_0.9.15-354-g3fd2730b1-dirty/LinuxNoEditor/CarlaUE4/Binaries/Linux/CarlaUE4-Linux-Debug
+11# 0x0000000005DA16E8 in /scratch_local/rocky/custom_carla_0_9_15/carla/Dist/CARLA_Debug_0.9.15-354-g3fd2730b1-dirty/LinuxNoEditor/CarlaUE4/Binaries/Linux/CarlaUE4-Linux-Debug
+12# 0x0000000005DA145C in /scratch_local/rocky/custom_carla_0_9_15/carla/Dist/CARLA_Debug_0.9.15-354-g3fd2730b1-dirty/LinuxNoEditor/CarlaUE4/Binaries/Linux/CarlaUE4-Linux-Debug
+13# 0x00007F14C760C1CA in /lib64/libpthread.so.0
+14# clone in /lib64/libc.so.6
+
+Before CloseNow:
+
+After CloseNow:
