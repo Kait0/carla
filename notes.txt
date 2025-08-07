@@ -93,6 +93,27 @@ Unreal Threading errors: read write races. Thread IDs are broken
 [2025.08.06-21.05.37:050][920]LogCarla: Error: Actor not Spawned
 [2025.08.06-21.05.37:050][920]LogCarlaServer: Responding error: Spawn failed because of collision at spawn position
 
+2025.08.07-00.01.25:262][528]LogScript: Warning: Accessed None trying to read property CallFunc_Array_Get_Item
+	BP_Stop_C /Game/Carla/Maps/Town03.Town03:PersistentLevel.BP_Stop7
+	Function /Game/Carla/Static/TrafficLight/Streetlights_01/BP_Stop.BP_Stop_C:ExecuteUbergraph_BP_Stop:0638
+[2025.08.07-00.01.25:263][528]LogScript: Warning: Script call stack:
+	Function /Game/Carla/Static/TrafficLight/Streetlights_01/BP_Stop.BP_Stop_C:BndEvt__CheckBox_K2Node_ComponentBoundEvent_3_ComponentEndOverlapSignature__DelegateSignature
+	Function /Game/Carla/Static/TrafficLight/Streetlights_01/BP_Stop.BP_Stop_C:ExecuteUbergraph_BP_Stop
+
+[2025.08.07-00.01.25:263][528]LogScript: Warning: Accessed None trying to read property CallFunc_Array_Get_Item
+	BP_Stop_C /Game/Carla/Maps/Town03.Town03:PersistentLevel.BP_Stop7
+	Function /Game/Carla/Static/TrafficLight/Streetlights_01/BP_Stop.BP_Stop_C:ExecuteUbergraph_BP_Stop:0638
+[2025.08.07-00.01.25:263][528]LogScript: Warning: Script call stack:
+	Function /Game/Carla/Static/TrafficLight/Streetlights_01/BP_Stop.BP_Stop_C:BndEvt__CheckBox_K2Node_ComponentBoundEvent_3_ComponentEndOverlapSignature__DelegateSignature
+	Function /Game/Carla/Static/TrafficLight/Streetlights_01/BP_Stop.BP_Stop_C:ExecuteUbergraph_BP_Stop
+
+[2025.08.07-00.01.25:263][528]LogScript: Warning: Accessed None trying to read property CallFunc_Array_Get_Item
+	BP_Stop_C /Game/Carla/Maps/Town03.Town03:PersistentLevel.BP_Stop7
+	Function /Game/Carla/Static/TrafficLight/Streetlights_01/BP_Stop.BP_Stop_C:ExecuteUbergraph_BP_Stop:0638
+[2025.08.07-00.01.25:263][528]LogScript: Warning: Script call stack:
+	Function /Game/Carla/Static/TrafficLight/Streetlights_01/BP_Stop.BP_Stop_C:BndEvt__CheckBox_K2Node_ComponentBoundEvent_3_ComponentEndOverlapSignature__DelegateSignature
+	Function /Game/Carla/Static/TrafficLight/Streetlights_01/BP_Stop.BP_Stop_C:ExecuteUbergraph_BP_Stop
+
 Addressed Errors:
 [2025.07.31-18.07.41:760][421]LogPhysicsCore: Error: PHYSX: (D:/Build/++UE4/Sync/Engine/Source/ThirdParty/PhysX3/PhysX_3.4/Source/PhysXVehicle/src/PxVehicleUpdate.cpp 4833) eINVALID_PARAMETER : PxVehicle4W does not obey the rule that the eFRONT_RIGHT/eREAR_RIGHT wheels are to the right of the eFRONT_LEFT/eREAR_LEFT wheels
 This probably only triggers for bicycles/motorcycles for which the right and left wheels are at the same location.
