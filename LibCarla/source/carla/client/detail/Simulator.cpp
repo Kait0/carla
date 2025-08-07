@@ -50,21 +50,30 @@ namespace detail {
   }
 
   static bool SynchronizeFrame(uint64_t frame, const Episode &episode, time_duration timeout) {
+    std::cout << "300" << std::endl;  // TODO BE debug
+    std::cout << "Frame: " << frame << std::endl;  // TODO BE debug
     bool result = true;
     auto start = std::chrono::system_clock::now();
+    std::cout << "301" << std::endl;  // TODO BE debug
     while (frame > episode.GetState()->GetTimestamp().frame) {
+      std::cout << "episode.GetState()->GetTimestamp().frame: " << episode.GetState()->GetTimestamp().frame << std::endl;  // TODO BE debug
       std::this_thread::yield();
       auto end = std::chrono::system_clock::now();
       auto diff = std::chrono::duration_cast<std::chrono::milliseconds>(end-start);
+      std::cout << "Time diff: " << diff.count() << " ms" << std::endl;  // TODO BE debug
+
       if(timeout.to_chrono() < diff) {
+        std::cout << "303" << std::endl;  // TODO BE debug
         result = false;
         break;
       }
     }
+    std::cout << "304" << std::endl;  // TODO BE debug
+
     if(result) {
       carla::traffic_manager::TrafficManager::Tick();
     }
-
+    std::cout << "305" << std::endl;  // TODO BE debug
     return result;
   }
 
@@ -239,6 +248,7 @@ EpisodeProxy Simulator::GetCurrentEpisode() {
     std::cout << "104" << std::endl;  // TODO BE debug
 
     // waits until new episode is received
+    // TODO BE This is where CARLA gets stuck sometimes
     bool result = SynchronizeFrame(frame, *_episode, timeout);
     std::cout << "105" << std::endl;  // TODO BE debug
 
