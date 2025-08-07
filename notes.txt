@@ -123,3 +123,20 @@ Commented the check for now. I should try to reproduce if there is a particular 
 Before CarlaDataProvider.get_world().tick(): Hangs up.
 No error message on either client or server.
 Python program does not respond to interrupts.
+
+Order of call
+Before CarlaDataProvider.get_world().tick():
+100
+102
+103
+108
+109
+104
+109
+109
+109
+109
+109
+105
+106
+After CarlaDataProvider.get_world().tick():
