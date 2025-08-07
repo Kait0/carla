@@ -50,6 +50,49 @@ Unreal Threading errors: read write races. Thread IDs are broken
 [2025.08.05-23.43.29:267][981]LogSpawn: Warning: SpawnActor failed because of collision at the spawn location [X=-736.782 Y=12103.564 Z=20.000] for [BP_Charger2020_C]
 [2025.08.05-23.43.29:267][981]LogCarla: Warning: Failed to spawn actor 'vehicle.dodge.charger_2020'
 
+[2025.08.06-20.55.49:864][  0]LogStreaming: Error: Couldn't find file for package /Game/Carla/Static/GenericMaterials/Ground/SimpleRoad/CheapRoad requested by async loading code. NameToLoad: /Game/Carla/Static/GenericMaterials/Ground/SimpleRoad/CheapRoad
+[2025.08.06-20.55.49:864][  0]LogStreaming: Error: Found 0 dependent packages...
+[2025.08.06-20.55.49:865][  0]LogStreaming: Error: Couldn't find file for package /Game/Carla/Static/GenericMaterials/Ground/SimpleRoad/CheapSideWalkCurb requested by async loading code. NameToLoad: /Game/Carla/Static/GenericMaterials/Ground/SimpleRoad/CheapSideWalkCurb
+[2025.08.06-20.55.49:865][  0]LogStreaming: Error: Found 0 dependent packages...
+[2025.08.06-20.55.49:866][  0]LogStreaming: Error: Couldn't find file for package /Game/Carla/Static/GenericMaterials/Ground/SimpleRoad/CheapSideWalk_00 requested by async loading code. NameToLoad: /Game/Carla/Static/GenericMaterials/Ground/SimpleRoad/CheapSideWalk_00
+[2025.08.06-20.55.49:866][  0]LogStreaming: Error: Found 0 dependent packages...
+[2025.08.06-20.55.49:867][  0]LogStreaming: Error: Couldn't find file for package /Game/Carla/Static/GenericMaterials/Ground/SimpleRoad/CheapLaneMarking requested by async loading code. NameToLoad: /Game/Carla/Static/GenericMaterials/Ground/SimpleRoad/CheapLaneMarking
+[2025.08.06-20.55.49:867][  0]LogStreaming: Error: Found 0 dependent packages...
+[2025.08.06-20.55.49:868][  0]LogStreaming: Error: Couldn't find file for package /Game/Carla/Static/GenericMaterials/WetPavement/WetPavement_Complex_Road_N2 requested by async loading code. NameToLoad: /Game/Carla/Static/GenericMaterials/WetPavement/WetPavement_Complex_Road_N2
+[2025.08.06-20.55.49:868][  0]LogStreaming: Error: Found 0 dependent packages...
+[2025.08.06-20.55.49:868][  0]LogStreaming: Error: Couldn't find file for package /Game/Carla/Static/GenericMaterials/WetPavement/WetPavement_Complex_Concrete requested by async loading code. NameToLoad: /Game/Carla/Static/GenericMaterials/WetPavement/WetPavement_Complex_Concrete
+[2025.08.06-20.55.49:868][  0]LogStreaming: Error: Found 0 dependent packages...
+[2025.08.06-20.55.49:869][  0]LogStreaming: Error: Couldn't find file for package /Game/Carla/Static/GenericMaterials/Ground/SideWalks/SidewalkN4/WetPavement_SidewalkN4 requested by async loading code. NameToLoad: /Game/Carla/Static/GenericMaterials/Ground/SideWalks/SidewalkN4/WetPavement_SidewalkN4
+[2025.08.06-20.55.49:869][  0]LogStreaming: Error: Found 0 dependent packages...
+[2025.08.06-20.55.49:870][  0]LogStreaming: Error: Couldn't find file for package /Game/Carla/Static/GenericMaterials/LaneMarking/Lanemarking requested by async loading code. NameToLoad: /Game/Carla/Static/GenericMaterials/LaneMarking/Lanemarking
+[2025.08.06-20.55.49:870][  0]LogStreaming: Error: Found 0 dependent packages...
+
+[2025.08.06-20.55.51:387][  0]LogStreaming: Error: Couldn't find file for package /Game/Carla/Static/GenericMaterials/Metal/M_Aluminium_2 requested by async loading code. NameToLoad: /Game/Carla/Static/GenericMaterials/Metal/M_Aluminium_2
+[2025.08.06-20.55.51:387][  0]LogStreaming: Error: Found 1 dependent packages...
+[2025.08.06-20.55.51:387][  0]LogStreaming: Error:   /Game/Carla/Static/Car/4Wheeled/Toyota_Prius/SK_Toyota_Prius
+
+[2025.08.06-20.56.29:729][  0]LogCore: Error: FVector contains NaN: X=-inf Y=-inf Z=-inf
+
+[2025.08.06-20.56.37:355][ 10]LogStreaming: Error: Couldn't find file for package /Game/Carla/Static/GenericMaterials/WetPavement/MI_WetSideWalk_2 requested by async loading code. NameToLoad: /Game/Carla/Static/GenericMaterials/WetPavement/MI_WetSideWalk_2
+[2025.08.06-20.56.37:355][ 10]LogStreaming: Error: Found 1 dependent packages...
+[2025.08.06-20.56.37:355][ 10]LogStreaming: Error:   /Game/Carla/Maps/Town01
+[2025.08.06-20.56.37:724][ 10]LogStreaming: Error: Couldn't find file for package /Game/Carla/Static/Building/Materials/Block06/M_Block06StairsWall_2 requested by async loading code. NameToLoad: /Game/Carla/Static/Building/Materials/Block06/M_Block06StairsWall_2
+[2025.08.06-20.56.37:724][ 10]LogStreaming: Error: Found 1 dependent packages...
+[2025.08.06-20.56.37:724][ 10]LogStreaming: Error:   /Game/Carla/Static/Building/Materials/Block06/SM_Block06Roof
+
+[2025.08.06-20.58.00:106][ 13]LogCarla: Error: BP_Spline48 has no SM assigned to the ISM
+[2025.08.06-20.58.00:106][ 13]LogCarla: Error: BP_Spline5_14005 has no SM assigned to the ISM
+
+[2025.08.06-21.04.55:384][761]LogCarla: Spawning actor 'vehicle.nissan.patrol_2021'
+[2025.08.06-21.04.55:407][761]LogPhysics: Warning: UWorld::FindTeleportSpot called with an actor that is intersecting geometry. Failed to find new location likely due to movement component's 'UpdatedComponent' not being a collider component.
+[2025.08.06-21.04.55:408][761]LogSpawn: Warning: SpawnActor failed because of collision at the spawn location [X=8353.476 Y=-8682.748 Z=820.000] for [BP_NissanPatrol2021_C]
+[2025.08.06-21.04.55:408][761]LogCarla: Warning: Failed to spawn actor 'vehicle.nissan.patrol_2021'
+[2025.08.06-21.04.55:408][761]LogCarla: Error: Actor not Spawned
+[2025.08.06-21.04.55:408][761]LogCarlaServer: Responding error: Spawn failed because of collision at spawn position
+
+[2025.08.06-21.05.37:050][920]LogCarla: Error: Actor not Spawned
+[2025.08.06-21.05.37:050][920]LogCarlaServer: Responding error: Spawn failed because of collision at spawn position
+
 Addressed Errors:
 [2025.07.31-18.07.41:760][421]LogPhysicsCore: Error: PHYSX: (D:/Build/++UE4/Sync/Engine/Source/ThirdParty/PhysX3/PhysX_3.4/Source/PhysXVehicle/src/PxVehicleUpdate.cpp 4833) eINVALID_PARAMETER : PxVehicle4W does not obey the rule that the eFRONT_RIGHT/eREAR_RIGHT wheels are to the right of the eFRONT_LEFT/eREAR_LEFT wheels
 This probably only triggers for bicycles/motorcycles for which the right and left wheels are at the same location.
