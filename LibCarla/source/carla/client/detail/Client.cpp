@@ -28,6 +28,9 @@
 
 #include <thread>
 
+// TODO BE debug
+#include <iostream>
+
 namespace carla {
 namespace client {
 namespace detail {
@@ -68,6 +71,7 @@ namespace detail {
 
     template <typename T, typename ... Args>
     auto CallAndWait(const std::string &function, Args && ... args) {
+      std::cout << "109" << std::endl;  // TODO BE debug
       auto object = RawCall(function, std::forward<Args>(args) ...);
       using R = typename carla::rpc::Response<T>;
       auto response = object.template as<R>();
@@ -733,6 +737,7 @@ namespace detail {
   }
 
   uint64_t Client::SendTickCue() {
+    std::cout << "108" << std::endl;  // TODO BE debug
     return _pimpl->CallAndWait<uint64_t>("tick_cue");
   }
 

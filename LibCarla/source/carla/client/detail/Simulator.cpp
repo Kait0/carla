@@ -24,6 +24,9 @@
 #include <exception>
 #include <thread>
 
+// TODO BE debug
+#include <iostream>
+
 using namespace std::string_literals;
 
 namespace carla {
@@ -225,19 +228,24 @@ EpisodeProxy Simulator::GetCurrentEpisode() {
   }
 
   uint64_t Simulator::Tick(time_duration timeout) {
+    std::cout << "102" << std::endl;  // TODO BE debug
     DEBUG_ASSERT(_episode != nullptr);
 
     // tick pedestrian navigation
     NavigationTick();
-
+    std::cout << "103" << std::endl;  // TODO BE debug
     // send tick command
     const auto frame = _client.SendTickCue();
+    std::cout << "104" << std::endl;  // TODO BE debug
 
     // waits until new episode is received
     bool result = SynchronizeFrame(frame, *_episode, timeout);
+    std::cout << "105" << std::endl;  // TODO BE debug
+
     if (!result) {
       throw_exception(TimeoutException(_client.GetEndpoint(), timeout));
     }
+    std::cout << "106" << std::endl;  // TODO BE debug
     return frame;
   }
 

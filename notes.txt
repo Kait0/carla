@@ -118,3 +118,8 @@ Addressed Errors:
 [2025.07.31-18.07.41:760][421]LogPhysicsCore: Error: PHYSX: (D:/Build/++UE4/Sync/Engine/Source/ThirdParty/PhysX3/PhysX_3.4/Source/PhysXVehicle/src/PxVehicleUpdate.cpp 4833) eINVALID_PARAMETER : PxVehicle4W does not obey the rule that the eFRONT_RIGHT/eREAR_RIGHT wheels are to the right of the eFRONT_LEFT/eREAR_LEFT wheels
 This probably only triggers for bicycles/motorcycles for which the right and left wheels are at the same location.
 Commented the check for now. I should try to reproduce if there is a particular CARLA vehicle type that is misconfigured.
+
+
+Before CarlaDataProvider.get_world().tick(): Hangs up.
+No error message on either client or server.
+Python program does not respond to interrupts.

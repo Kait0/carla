@@ -18,6 +18,9 @@
 
 #include <exception>
 
+// TODO BE debug
+#include <iostream>
+
 namespace carla {
 namespace client {
 
@@ -162,6 +165,7 @@ namespace client {
   }
 
   uint64_t World::Tick(time_duration timeout) {
+    std::cout << "100" << std::endl;  // TODO BE debug
     time_duration local_timeout = timeout.milliseconds() == 0 ?
         _episode.Lock()->GetNetworkingTimeout() : timeout;
     return _episode.Lock()->Tick(local_timeout);
