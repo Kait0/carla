@@ -159,7 +159,11 @@ void TrafficManagerLocal::Run() {
     // Wait for external trigger to initiate cycle in synchronous mode.
     if (synchronous_mode) {
       std::unique_lock<std::mutex> lock(step_execution_mutex);
+      std::cout << "590" << std::endl;  // TODO BE debug
+      step_end.store(false);  // Reset step_end before waiting
+      step_end_trigger.notify_one();  // Signal that we're ready for next step
       step_begin_trigger.wait(lock, [this]() {return step_begin.load() || !run_traffic_manger.load();});
+      std::cout << "591" << std::endl;  // TODO BE debug
       step_begin.store(false);
     }
     std::cout << "501" << std::endl;  // TODO BE debug
@@ -254,8 +258,14 @@ void TrafficManagerLocal::Run() {
       std::cout << "511" << std::endl;  // TODO BE debug
       episode_proxy.Lock()->ApplyBatchSync(control_frame, false);
       std::cout << "512" << std::endl;  // TODO BE debug
-      step_end.store(true);
-      step_end_trigger.notify_one();
+
+      // Signal completion - acquire lock only for the notification
+      {
+        std::lock_guard<std::mutex> lock(step_execution_mutex);
+        step_end.store(true);
+        std::cout << "573" << std::endl;  // TODO BE debug
+        step_end_trigger.notify_one();
+      }
       std::cout << "513" << std::endl;  // TODO BE debug
     } else {
       if (control_frame.size() > 0){
@@ -269,16 +279,25 @@ bool TrafficManagerLocal::SynchronousTick() {
   std::cout << "407" << std::endl;  // TODO BE debug
   if (parameters.GetSynchronousMode()) {
     std::cout << "408" << std::endl;  // TODO BE debug
-    step_begin.store(true);
-    std::cout << "409" << std::endl;  // TODO BE debug
-    step_begin_trigger.notify_one();
-    std::cout << "410" << std::endl;  // TODO BE debug
-    std::unique_lock<std::mutex> lock(step_execution_mutex);
-    std::cout << "411" << std::endl;  // TODO BE debug
-    step_end_trigger.wait(lock, [this]() { return step_end.load(); });
-    std::cout << "412" << std::endl;  // TODO BE debug
-    step_end.store(false);
-    std::cout << "413" << std::endl;  // TODO BE debug
+
+    // Signal to start the step and wait for completion
+    {
+      std::lock_guard<std::mutex> lock(step_execution_mutex);
+      step_begin.store(true);
+      std::cout << "409" << std::endl;  // TODO BE debug
+      step_begin_trigger.notify_one();
+      std::cout << "410" << std::endl;  // TODO BE debug
+    }
+
+    // Wait for step completion with a separate lock acquisition
+    {
+      std::unique_lock<std::mutex> lock(step_execution_mutex);
+      std::cout << "411" << std::endl;  // TODO BE debug
+      step_end_trigger.wait(lock, [this]() { return step_end.load(); });
+      std::cout << "412" << std::endl;  // TODO BE debug
+      step_end.store(false);
+      std::cout << "413" << std::endl;  // TODO BE debug
+    }
   }
   return true;
 }

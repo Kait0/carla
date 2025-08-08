@@ -1,0 +1,104 @@
+Your deadlock is caused by a classic missed-notify / ordering race between the two threads. The fix is to follow the standard condition-variable pattern: modify the predicate under the same mutex the waiter uses, then notify (you may notify while still holding the mutex). Doing that removes the tiny window between “check predicate” and “go to sleep” where a notify can be lost.
+
+Below I explain what goes wrong in your code and give a minimal, safe rewrite of both sides.
+Why it deadlocks
+
+Right now you do (simplified):
+
+Run() (Thread A):
+
+// ... ApplyBatchSync(...)
+step_end.store(true);
+step_end_trigger.notify_one();
+std::unique_lock<std::mutex> lock(step_execution_mutex);
+step_begin_trigger.wait(lock, [this](){ return step_begin.load() || !run_traffic_manger.load(); });
+
+SynchronousTick() (Thread B):
+
+step_begin.store(true);
+step_begin_trigger.notify_one();
+std::unique_lock<std::mutex> lock(step_execution_mutex);
+step_end_trigger.wait(lock, [this](){ return step_end.load(); });
+
+Problem: both threads call notify_one() before they take step_execution_mutex. The condition variable does not queue notifications — if the other thread is not already waiting, the notify is lost. Worse, each thread then proceeds to wait() (which checks the predicate then sleeps). There is a timing window:
+
+    waiter checks predicate → false
+
+    notifier sets predicate and notifies → but the waiter hasn't yet reached the wait state
+
+    waiter calls wait() and sleeps → never receives the earlier notify → deadlock
+
+Correct pattern
+
+Always (for a given condition variable cv and predicate pred):
+
+    Acquire the mutex m.
+
+    Modify the shared state that pred reads.
+
+    cv.notify_one() (it’s OK to call while still holding m).
+
+    The waiter uses std::unique_lock<std::mutex> lock(m); cv.wait(lock, pred);.
+
+With this pattern the waiter either sees the predicate true when it checks it (and does not block), or the notifier cannot change the predicate & notify until the thread reaches a state where the notify will be observed safely.
+Minimal safe fix for your code
+Run() — notify and set under the mutex, then wait with the same unique_lock
+
+Put the end-of-step update and notification inside a scope that holds step_execution_mutex before you wait on step_begin_trigger:
+
+// ... after ApplyBatchSync(control_frame, false);
+if (synchronous_mode) {
+  {
+    std::unique_lock<std::mutex> lock(step_execution_mutex);
+    step_end.store(true);
+    step_end_trigger.notify_one();    // notify while holding the mutex
+    // Now wait for step_begin while still holding the same lock:
+    step_begin_trigger.wait(lock, [this]() {
+      return step_begin.load() || !run_traffic_manger.load();
+    });
+    step_begin.store(false);
+  } // lock released here
+}
+
+SynchronousTick() — set predicate & notify while holding the same mutex, then wait for step_end
+
+Mirror the same pattern so there is no race window:
+
+bool TrafficManagerLocal::SynchronousTick() {
+  if (parameters.GetSynchronousMode()) {
+    std::unique_lock<std::mutex> lock(step_execution_mutex);
+    step_begin.store(true);
+    step_begin_trigger.notify_one();   // notify while holding the mutex
+    // Now wait for step_end under the same lock
+    step_end_trigger.wait(lock, [this]() { return step_end.load(); });
+    step_end.store(false);
+    // lock released on scope exit
+  }
+  return true;
+}
+
+Why this works:
+
+    The waiter (Run() or SynchronousTick()) always uses step_execution_mutex when checking the predicate and while going into wait().
+
+    The notifier modifies the predicate while holding step_execution_mutex and then notifies. That prevents the notifier from sneaking a notify into the tiny window between predicate check and the actual wait.
+
+Notes & alternatives
+
+    You can notify while holding the mutex. The woken thread will not run until the notifying thread releases the mutex, but that’s usually fine and removes the race. Notifying after unlocking is also OK if the state was changed under lock — the important bit is the state change must be atomic with respect to the wait/check (i.e., protected by the same mutex).
+
+    Since you use the predicate overload of wait, spurious wakeups are handled automatically.
+
+    Because the shared boolean flags are now guarded by the mutex when mutated/read in the critical places, using std::atomic for them is redundant (but harmless). If you keep atomic<bool> for them you should be consistent about ordering: reading/writing under the mutex is sufficient to ensure visibility and ordering.
+
+    Keep the locked region small — but not so small that you re-introduce the race. In the snippets above we set the predicate and notify while holding the lock, then wait (which releases the lock while waiting). That is the standard and robust approach.
+
+Final checklist to avoid the bug
+
+Modify predicate (step_end, step_begin) while holding step_execution_mutex.
+
+Use cv.notify_one() after changing the predicate (either while holding the lock or immediately after).
+
+Wait with cv.wait(lock, predicate) where lock is std::unique_lock<std::mutex> bound to the same mutex.
+
+Avoid calling notify_one() and then later acquiring the mutex — that ordering creates the lost-notify window.
