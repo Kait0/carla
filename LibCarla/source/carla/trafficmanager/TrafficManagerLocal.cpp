@@ -259,6 +259,7 @@ void TrafficManagerLocal::Run() {
       episode_proxy.Lock()->ApplyBatchSync(control_frame, false);
       std::cout << "512" << std::endl;  // TODO BE debug
 
+      // TODO current solution is also not thread safe. Retry
       // Signal completion - acquire lock only for the notification
       {
         std::lock_guard<std::mutex> lock(step_execution_mutex);
