@@ -71,7 +71,6 @@ namespace detail {
 
     template <typename T, typename ... Args>
     auto CallAndWait(const std::string &function, Args && ... args) {
-      std::cout << "109" << std::endl;  // TODO BE debug
       auto object = RawCall(function, std::forward<Args>(args) ...);
       using R = typename carla::rpc::Response<T>;
       auto response = object.template as<R>();
