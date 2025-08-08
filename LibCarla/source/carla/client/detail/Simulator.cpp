@@ -71,7 +71,7 @@ namespace detail {
     std::cout << "304" << std::endl;  // TODO BE debug
 
     if(result) {
-      carla::traffic_manager::TrafficManager::Tick();
+      carla::traffic_manager::TrafficManager::Tick(); // TODO BE process hangs up here.
     }
     std::cout << "305" << std::endl;  // TODO BE debug
     return result;

@@ -140,3 +140,16 @@ Before CarlaDataProvider.get_world().tick():
 105
 106
 After CarlaDataProvider.get_world().tick():
+
+
+Crash:
+Before hangup there is an 8ms delay in thread yield. Then the process gets stuck in traffic manager tick.
+episode.GetState()->GetTimestamp().frame: 19285
+Time diff: 8 ms
+episode.GetState()->GetTimestamp().frame: 19285
+Time diff: 16 ms
+304
+109
+109
+109
+109

@@ -12,6 +12,9 @@
 
 #include "carla/trafficmanager/TrafficManagerLocal.h"
 
+// TODO BE debug
+#include <iostream>
+
 namespace carla {
 namespace traffic_manager {
 
@@ -151,6 +154,7 @@ void TrafficManagerLocal::Run() {
     bool synchronous_mode = parameters.GetSynchronousMode();
     bool hybrid_physics_mode = parameters.GetHybridPhysicsMode();
     parameters.SetMaxBoundaries(20.0f, episode_proxy.Lock()->GetEpisodeSettings().actor_active_distance);
+    std::cout << "500" << std::endl;  // TODO BE debug
 
     // Wait for external trigger to initiate cycle in synchronous mode.
     if (synchronous_mode) {
@@ -158,6 +162,7 @@ void TrafficManagerLocal::Run() {
       step_begin_trigger.wait(lock, [this]() {return step_begin.load() || !run_traffic_manger.load();});
       step_begin.store(false);
     }
+    std::cout << "501" << std::endl;  // TODO BE debug
 
     // Skipping velocity update if elapsed time is less than 0.05s in asynchronous, hybrid mode.
     if (!synchronous_mode && hybrid_physics_mode) {
@@ -178,14 +183,19 @@ void TrafficManagerLocal::Run() {
       }
       last_frame = timestamp.frame;
     }
+    std::cout << "502" << std::endl;  // TODO BE debug
 
     std::unique_lock<std::mutex> registration_lock(registration_mutex);
     // Updating simulation state, actor life cycle and performing necessary cleanup.
+    std::cout << "503" << std::endl;  // TODO BE debug
+
     alsm.Update();
+    std::cout << "504" << std::endl;  // TODO BE debug
 
     // Re-allocating inter-stage communication frames based on changed number of registered vehicles.
     int current_registered_vehicles_state = registered_vehicles.GetState();
     unsigned long number_of_vehicles = vehicle_id_list.size();
+    std::cout << "505" << std::endl;  // TODO BE debug
     if (registered_vehicles_state != current_registered_vehicles_state || number_of_vehicles != registered_vehicles.Size()) {
       vehicle_id_list = registered_vehicles.GetIDList();
       number_of_vehicles = vehicle_id_list.size();
@@ -202,6 +212,7 @@ void TrafficManagerLocal::Run() {
 
       registered_vehicles_state = registered_vehicles.GetState();
     }
+    std::cout << "506" << std::endl;  // TODO BE debug
 
     // Reset frames for current cycle.
     localization_frame.clear();
@@ -217,6 +228,7 @@ void TrafficManagerLocal::Run() {
     // Resize to accomodate at least all ApplyVehicleControl commands,
     // that will be inserted by the motion_plan_stage stage.
     control_frame.resize(number_of_vehicles);
+    std::cout << "507" << std::endl;  // TODO BE debug
 
     // Run core operation stages.
     for (unsigned long index = 0u; index < vehicle_id_list.size(); ++index) {
@@ -225,6 +237,8 @@ void TrafficManagerLocal::Run() {
     for (unsigned long index = 0u; index < vehicle_id_list.size(); ++index) {
       collision_stage.Update(index);
     }
+    std::cout << "508" << std::endl;  // TODO BE debug
+
     collision_stage.ClearCycleCache();
     vehicle_light_stage.UpdateWorldInfo();
     for (unsigned long index = 0u; index < vehicle_id_list.size(); ++index) {
@@ -232,14 +246,17 @@ void TrafficManagerLocal::Run() {
       motion_plan_stage.Update(index);
       vehicle_light_stage.Update(index);
     }
-
+    std::cout << "509" << std::endl;  // TODO BE debug
     registration_lock.unlock();
-
+    std::cout << "510" << std::endl;  // TODO BE debug
     // Sending the current cycle's batch command to the simulator.
     if (synchronous_mode) {
+      std::cout << "511" << std::endl;  // TODO BE debug
       episode_proxy.Lock()->ApplyBatchSync(control_frame, false);
+      std::cout << "512" << std::endl;  // TODO BE debug
       step_end.store(true);
       step_end_trigger.notify_one();
+      std::cout << "513" << std::endl;  // TODO BE debug
     } else {
       if (control_frame.size() > 0){
         episode_proxy.Lock()->ApplyBatchSync(control_frame, false);
@@ -249,13 +266,19 @@ void TrafficManagerLocal::Run() {
 }
 
 bool TrafficManagerLocal::SynchronousTick() {
+  std::cout << "407" << std::endl;  // TODO BE debug
   if (parameters.GetSynchronousMode()) {
+    std::cout << "408" << std::endl;  // TODO BE debug
     step_begin.store(true);
+    std::cout << "409" << std::endl;  // TODO BE debug
     step_begin_trigger.notify_one();
-
+    std::cout << "410" << std::endl;  // TODO BE debug
     std::unique_lock<std::mutex> lock(step_execution_mutex);
+    std::cout << "411" << std::endl;  // TODO BE debug
     step_end_trigger.wait(lock, [this]() { return step_end.load(); });
+    std::cout << "412" << std::endl;  // TODO BE debug
     step_end.store(false);
+    std::cout << "413" << std::endl;  // TODO BE debug
   }
   return true;
 }

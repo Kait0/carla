@@ -11,6 +11,9 @@
 
 #include <rpc/client.h>
 
+// TODO BE debug
+#include <iostream>
+
 namespace carla {
 namespace traffic_manager {
 
@@ -178,6 +181,7 @@ public:
 
   /// Method to provide synchronous tick.
   bool SynchronousTick() {
+    std::cout << "406" << std::endl;  // TODO BE debug
     DEBUG_ASSERT(_client != nullptr);
     return _client->call("synchronous_tick").as<bool>();
   }
