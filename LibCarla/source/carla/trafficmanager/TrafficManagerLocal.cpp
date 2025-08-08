@@ -14,6 +14,7 @@
 
 // TODO BE debug
 #include <iostream>
+#include <thread>
 
 namespace carla {
 namespace traffic_manager {
@@ -158,13 +159,15 @@ void TrafficManagerLocal::Run() {
 
     // Wait for external trigger to initiate cycle in synchronous mode.
     if (synchronous_mode) {
-      std::unique_lock<std::mutex> lock(step_execution_mutex);
+      tm_done.store(false);
+      tm_rdy.store(true);
       std::cout << "590" << std::endl;  // TODO BE debug
-      step_end.store(false);  // Reset step_end before waiting
-      step_end_trigger.notify_one();  // Signal that we're ready for next step
-      step_begin_trigger.wait(lock, [this]() {return step_begin.load() || !run_traffic_manger.load();});
+      while (!tm_tick.load() and run_traffic_manger.load() and tm_synchronous.load()) {
+        std::this_thread::yield(); // Wait for tick.
+      }
+      tm_tick.store(false);
       std::cout << "591" << std::endl;  // TODO BE debug
-      step_begin.store(false);
+      tm_rdy.store(false);
     }
     std::cout << "501" << std::endl;  // TODO BE debug
 
@@ -259,14 +262,7 @@ void TrafficManagerLocal::Run() {
       episode_proxy.Lock()->ApplyBatchSync(control_frame, false);
       std::cout << "512" << std::endl;  // TODO BE debug
 
-      // TODO current solution is also not thread safe. Retry
-      // Signal completion - acquire lock only for the notification
-      {
-        std::lock_guard<std::mutex> lock(step_execution_mutex);
-        step_end.store(true);
-        std::cout << "573" << std::endl;  // TODO BE debug
-        step_end_trigger.notify_one();
-      }
+      tm_done.store(true);  // Tell the SynchronousTick that the traffic manager is done.
       std::cout << "513" << std::endl;  // TODO BE debug
     } else {
       if (control_frame.size() > 0){
@@ -277,28 +273,21 @@ void TrafficManagerLocal::Run() {
 }
 
 bool TrafficManagerLocal::SynchronousTick() {
-  std::cout << "407" << std::endl;  // TODO BE debug
   if (parameters.GetSynchronousMode()) {
-    std::cout << "408" << std::endl;  // TODO BE debug
-
-    // Signal to start the step and wait for completion
-    {
-      std::lock_guard<std::mutex> lock(step_execution_mutex);
-      step_begin.store(true);
-      std::cout << "409" << std::endl;  // TODO BE debug
-      step_begin_trigger.notify_one();
-      std::cout << "410" << std::endl;  // TODO BE debug
+    std::cout << "207" << std::endl;  // TODO BE debug
+    // Wait for TM to be ready.
+    while (!tm_rdy.load() and run_traffic_manger.load() and tm_synchronous.load()) {
+      std::this_thread::yield(); // Wait for tick.
     }
-
-    // Wait for step completion with a separate lock acquisition
-    {
-      std::unique_lock<std::mutex> lock(step_execution_mutex);
-      std::cout << "411" << std::endl;  // TODO BE debug
-      step_end_trigger.wait(lock, [this]() { return step_end.load(); });
-      std::cout << "412" << std::endl;  // TODO BE debug
-      step_end.store(false);
-      std::cout << "413" << std::endl;  // TODO BE debug
+    std::cout << "208" << std::endl;  // TODO BE debug
+    // Continue traffic manager.
+    tm_tick.store(true);
+    std::cout << "209" << std::endl;  // TODO BE debug
+    // Wait until traffic manager finished.
+    while (!tm_done.load() and run_traffic_manger.load() and tm_synchronous.load()) {
+      std::this_thread::yield(); // Wait for tick.
     }
+    std::cout << "210" << std::endl;  // TODO BE debug
   }
   return true;
 }
@@ -306,9 +295,6 @@ bool TrafficManagerLocal::SynchronousTick() {
 void TrafficManagerLocal::Stop() {
 
   run_traffic_manger.store(false);
-  if (parameters.GetSynchronousMode()) {
-    step_begin_trigger.notify_one();
-  }
 
   if (worker_thread) {
     if (worker_thread->joinable()) {
@@ -336,9 +322,9 @@ void TrafficManagerLocal::Stop() {
   tl_frame.clear();
   control_frame.clear();
 
-  run_traffic_manger.store(true);
-  step_begin.store(false);
-  step_end.store(false);
+  tm_rdy.store(false);
+  tm_done.store(false);
+  tm_tick.store(false);
 }
 
 void TrafficManagerLocal::Release() {
@@ -511,10 +497,7 @@ bool TrafficManagerLocal::CheckAllFrozen(TLGroup tl_to_freeze) {
 void TrafficManagerLocal::SetSynchronousMode(bool mode) {
   const bool previous_mode = parameters.GetSynchronousMode();
   parameters.SetSynchronousMode(mode);
-  if (previous_mode && !mode) {
-    step_begin.store(true);
-    step_begin_trigger.notify_one();
-  }
+  tm_synchronous.store(mode);
 }
 
 void TrafficManagerLocal::SetSynchronousModeTimeOutInMiliSecond(double time) {

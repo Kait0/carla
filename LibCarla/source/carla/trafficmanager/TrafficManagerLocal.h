@@ -100,8 +100,11 @@ private:
   /// Switch to turn on / turn off traffic manager.
   std::atomic<bool> run_traffic_manger{true};
   /// Flags to signal step begin and end.
-  std::atomic<bool> step_begin{false};
-  std::atomic<bool> step_end{false};
+  // TODO BE new implementation
+  std::atomic<bool> tm_rdy{false};
+  std::atomic<bool> tm_done{false};
+  std::atomic<bool> tm_tick{false};
+  std::atomic<bool> tm_synchronous{false};
   /// Mutex for progressing synchronous execution.
   std::mutex step_execution_mutex;
   /// Condition variables for progressing synchronous execution.
