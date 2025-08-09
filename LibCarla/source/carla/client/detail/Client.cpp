@@ -28,9 +28,6 @@
 
 #include <thread>
 
-// TODO BE debug
-#include <iostream>
-
 namespace carla {
 namespace client {
 namespace detail {
@@ -736,7 +733,6 @@ namespace detail {
   }
 
   uint64_t Client::SendTickCue() {
-    std::cout << "108" << std::endl;  // TODO BE debug
     return _pimpl->CallAndWait<uint64_t>("tick_cue");
   }
 
