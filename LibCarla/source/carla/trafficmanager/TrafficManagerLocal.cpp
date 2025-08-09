@@ -165,7 +165,7 @@ void TrafficManagerLocal::Run() {
       while (!tm_tick.load() and run_traffic_manger.load() and tm_synchronous.load()) {
         std::this_thread::yield(); // Wait for tick.
       }
-      tm_done.store(false);
+      tm_done.store(false);  // TODO BE the done logic does not work. Need an additional wait mechanism?
       std::cout << "tm_tick: " << tm_tick.load() << "run_traffic_manger: " << run_traffic_manger.load() << "tm_synchronous: " << tm_synchronous.load() << std::endl;  // TODO BE debug
       tm_tick.store(false);
       std::cout << "999" << std::endl;  // TODO BE debug
