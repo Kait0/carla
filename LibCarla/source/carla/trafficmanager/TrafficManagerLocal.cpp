@@ -166,7 +166,7 @@ void TrafficManagerLocal::Run() {
       while (!tm_tick.load() and tm_synchronous.load()) {
         std::this_thread::yield(); // Wait for tick.
       }
-      std::cout << "tm_tick: " << tm_tick.load() << "run_traffic_manger: " run_traffic_manger.load() << "tm_synchronous: " << tm_synchronous.load() << std::endl;  // TODO BE debug
+      std::cout << "tm_tick: " << tm_tick.load() << "run_traffic_manger: " << run_traffic_manger.load() << "tm_synchronous: " << tm_synchronous.load() << std::endl;  // TODO BE debug
       tm_tick.store(false);
       std::cout << "999" << std::endl;  // TODO BE debug
       tm_rdy.store(false);
@@ -272,7 +272,7 @@ bool TrafficManagerLocal::SynchronousTick() {
     while (!tm_rdy.load() and tm_synchronous.load()) {
       std::this_thread::yield(); // Wait for tick.
     }
-    std::cout << "tm_tick: " << tm_tick.load() << "run_traffic_manger: " run_traffic_manger.load() << "tm_synchronous: " << tm_synchronous.load() << std::endl;  // TODO BE debug
+    std::cout << "tm_tick: " << tm_tick.load() << "run_traffic_manger: " << run_traffic_manger.load() << "tm_synchronous: " << tm_synchronous.load() << std::endl;  // TODO BE debug
 
     std::cout << "208" << std::endl;  // TODO BE debug
     // Continue traffic manager.
@@ -282,7 +282,7 @@ bool TrafficManagerLocal::SynchronousTick() {
     while (!tm_done.load() and tm_synchronous.load()) {
       std::this_thread::yield(); // Wait for tick.
     }
-    std::cout << "tm_tick: " << tm_tick.load() << "run_traffic_manger: " run_traffic_manger.load() << "tm_synchronous: " << tm_synchronous.load() << std::endl;  // TODO BE debug
+    std::cout << "tm_tick: " << tm_tick.load() << "run_traffic_manger: " << run_traffic_manger.load() << "tm_synchronous: " << tm_synchronous.load() << std::endl;  // TODO BE debug
 
     std::cout << "210" << std::endl;  // TODO BE debug
   }
