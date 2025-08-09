@@ -275,7 +275,7 @@ bool TrafficManagerLocal::SynchronousTick() {
       }
       std::this_thread::yield(); // Wait for tick.
     }
-    std::cout << "tm_tick: " << tm_tick.load() << "run_traffic_manger: " << run_traffic_manger.load() << "tm_synchronous: " << tm_synchronous.load() << std::endl;  // TODO BE debug
+    std::cout << "SynchronousTick tm_rdy: " << tm_rdy.load() << " run_traffic_manger: " << run_traffic_manger.load() << " tm_synchronous: " << tm_synchronous.load() << std::endl;  // TODO BE debug
 
     std::cout << "208" << std::endl;  // TODO BE debug
     // Continue traffic manager.
@@ -290,7 +290,7 @@ bool TrafficManagerLocal::SynchronousTick() {
       }
       std::this_thread::yield(); // Wait for tick.
     }
-    std::cout << "tm_tick: " << tm_tick.load() << "run_traffic_manger: " << run_traffic_manger.load() << "tm_synchronous: " << tm_synchronous.load() << std::endl;  // TODO BE debug
+    std::cout << "SynchronousTick tm_tick: " << tm_done.load() << " run_traffic_manger: " << run_traffic_manger.load() << " tm_synchronous: " << tm_synchronous.load() << std::endl;  // TODO BE debug
 
     std::cout << "210" << std::endl;  // TODO BE debug
   }
