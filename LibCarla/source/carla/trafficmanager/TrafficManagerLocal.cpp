@@ -165,9 +165,7 @@ void TrafficManagerLocal::Run() {
         std::this_thread::yield(); // Wait for tick.
       }
       std::cout << "current_frame: " << current_frame.load() << "target_frame: " << target_frame.load() << "tm_synchronous: " << tm_synchronous.load() << std::endl;  // TODO BE debug
-      tm_tick.store(false);
     }
-    std::cout << "501" << std::endl;  // TODO BE debug
 
     // Skipping velocity update if elapsed time is less than 0.05s in asynchronous, hybrid mode.
     if (!synchronous_mode && hybrid_physics_mode) {
@@ -480,7 +478,6 @@ bool TrafficManagerLocal::CheckAllFrozen(TLGroup tl_to_freeze) {
 
 void TrafficManagerLocal::SetSynchronousMode(bool mode) {
   std::cout << "0000" << std::endl;  // TODO BE debug
-  const bool previous_mode = parameters.GetSynchronousMode();
   parameters.SetSynchronousMode(mode);
   tm_synchronous.store(mode);
 }
