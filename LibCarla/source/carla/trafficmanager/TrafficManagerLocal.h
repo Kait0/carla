@@ -101,10 +101,9 @@ private:
   std::atomic<bool> run_traffic_manger{true};
   /// Flags to signal step begin and end.
   // TODO BE new implementation
-  std::atomic<bool> tm_rdy{false};
-  std::atomic<bool> tm_done{false};
-  std::atomic<bool> tm_tick{false};
   std::atomic<bool> tm_synchronous{false};
+  std::atomic<uint64_t> current_frame(0);
+  std::atomic<uint64_t> target_frame(0);
   /// Mutex for progressing synchronous execution.
   std::mutex step_execution_mutex;
   /// Condition variables for progressing synchronous execution.

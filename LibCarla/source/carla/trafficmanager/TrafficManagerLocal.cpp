@@ -160,16 +160,12 @@ void TrafficManagerLocal::Run() {
 
     // Wait for external trigger to initiate cycle in synchronous mode.
     if (synchronous_mode) {
-      tm_done.store(false);  // TODO BE the done logic does not work. Need an additional wait mechanism?
-      tm_rdy.store(true);
       std::cout << "590" << std::endl;  // TODO BE debug
-      while (!tm_tick.load() and run_traffic_manger.load() and tm_synchronous.load()) {
+      while (current_frame.load() >= target_frame.load() and run_traffic_manger.load() and tm_synchronous.load()) {
         std::this_thread::yield(); // Wait for tick.
       }
-      std::cout << "tm_tick: " << tm_tick.load() << "run_traffic_manger: " << run_traffic_manger.load() << "tm_synchronous: " << tm_synchronous.load() << std::endl;  // TODO BE debug
+      std::cout << "current_frame: " << current_frame.load() << "target_frame: " << target_frame.load() << "tm_synchronous: " << tm_synchronous.load() << std::endl;  // TODO BE debug
       tm_tick.store(false);
-      std::cout << "999" << std::endl;  // TODO BE debug
-      tm_rdy.store(false);
     }
     std::cout << "501" << std::endl;  // TODO BE debug
 
@@ -254,8 +250,7 @@ void TrafficManagerLocal::Run() {
       std::cout << "511" << std::endl;  // TODO BE debug
       episode_proxy.Lock()->ApplyBatchSync(control_frame, false);
       std::cout << "512" << std::endl;  // TODO BE debug
-
-      tm_done.store(true);  // Tell the SynchronousTick that the traffic manager is done.
+      ++current_frame;
       std::cout << "513" << std::endl;  // TODO BE debug
     } else {
       if (control_frame.size() > 0){
@@ -269,33 +264,11 @@ bool TrafficManagerLocal::SynchronousTick() {
   if (parameters.GetSynchronousMode()) {
     std::cout << "207" << std::endl;  // TODO BE debug
     // Wait for TM to be ready.
-    while (!tm_rdy.load() and tm_synchronous.load()) {
-      if (!run_traffic_manger.load()) {
-        std::cout << "997" << std::endl;  // TODO BE debug
-        return true;
-      }
+    ++target_frame;
+    while (current_frame.load() < target_frame.load() and tm_synchronous.load() and run_traffic_manger.load()) {
       std::this_thread::yield(); // Wait for tick.
     }
-    std::cout << "SynchronousTick tm_rdy: " << tm_rdy.load() << " run_traffic_manger: " << run_traffic_manger.load() << " tm_synchronous: " << tm_synchronous.load() << std::endl;  // TODO BE debug
-
-    std::cout << "208" << std::endl;  // TODO BE debug
-    // Continue traffic manager.
-    if (run_traffic_manger.load()) {
-      tm_tick.store(true);
-    }
-    std::cout << "209" << std::endl;  // TODO BE debug
-    // Wait until traffic manager finished.
-    // TODO BE TM_done can reset before it is loaded here.
-    while (!tm_done.load() and tm_synchronous.load()) {
-      if (!run_traffic_manger.load()) {
-        std::cout << "998" << std::endl;  // TODO BE debug
-        return true;
-      }
-      std::this_thread::yield(); // Wait for tick.
-    }
-    std::cout << "SynchronousTick tm_tick: " << tm_done.load() << " run_traffic_manger: " << run_traffic_manger.load() << " tm_synchronous: " << tm_synchronous.load() << std::endl;  // TODO BE debug
-
-    std::cout << "210" << std::endl;  // TODO BE debug
+    std::cout << "SynchronousTick current_frame: " << current_frame.load() << " target_frame: " << target_frame.load() << " tm_synchronous: " << tm_synchronous.load() << std::endl;  // TODO BE debug
   }
   return true;
 }
@@ -331,9 +304,8 @@ void TrafficManagerLocal::Stop() {
   tl_frame.clear();
   control_frame.clear();
 
-  tm_rdy.store(false);
-  tm_done.store(false);
-  tm_tick.store(false);
+  current_frame.store(0u);
+  target_frame.store(0u);
 }
 
 void TrafficManagerLocal::Release() {
