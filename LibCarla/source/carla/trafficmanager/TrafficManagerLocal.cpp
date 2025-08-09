@@ -271,6 +271,7 @@ bool TrafficManagerLocal::SynchronousTick() {
     // Wait for TM to be ready.
     while (!tm_rdy.load() and tm_synchronous.load()) {
       if (!run_traffic_manger.load()) {
+        std::cout << "997" << std::endl;  // TODO BE debug
         return true;
       }
       std::this_thread::yield(); // Wait for tick.
@@ -284,8 +285,10 @@ bool TrafficManagerLocal::SynchronousTick() {
     }
     std::cout << "209" << std::endl;  // TODO BE debug
     // Wait until traffic manager finished.
+    // TODO BE TM_done can reset before it is loaded here.
     while (!tm_done.load() and tm_synchronous.load()) {
       if (!run_traffic_manger.load()) {
+        std::cout << "998" << std::endl;  // TODO BE debug
         return true;
       }
       std::this_thread::yield(); // Wait for tick.
