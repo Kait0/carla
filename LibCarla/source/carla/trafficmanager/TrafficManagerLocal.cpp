@@ -269,7 +269,10 @@ bool TrafficManagerLocal::SynchronousTick() {
   if (parameters.GetSynchronousMode()) {
     std::cout << "207" << std::endl;  // TODO BE debug
     // Wait for TM to be ready.
-    while (!tm_rdy.load() and tm_synchronous.load() and run_traffic_manger.load()) {
+    while (!tm_rdy.load() and tm_synchronous.load()) {
+      if (!run_traffic_manger.load()) {
+        return true;
+      }
       std::this_thread::yield(); // Wait for tick.
     }
     std::cout << "tm_tick: " << tm_tick.load() << "run_traffic_manger: " << run_traffic_manger.load() << "tm_synchronous: " << tm_synchronous.load() << std::endl;  // TODO BE debug
@@ -281,7 +284,10 @@ bool TrafficManagerLocal::SynchronousTick() {
     }
     std::cout << "209" << std::endl;  // TODO BE debug
     // Wait until traffic manager finished.
-    while (!tm_done.load() and tm_synchronous.load() and run_traffic_manger.load()) {
+    while (!tm_done.load() and tm_synchronous.load()) {
+      if (!run_traffic_manger.load()) {
+        return true;
+      }
       std::this_thread::yield(); // Wait for tick.
     }
     std::cout << "tm_tick: " << tm_tick.load() << "run_traffic_manger: " << run_traffic_manger.load() << "tm_synchronous: " << tm_synchronous.load() << std::endl;  // TODO BE debug
