@@ -137,7 +137,7 @@ void TrafficManagerLocal::SetupLocalMap() {
 }
 
 void TrafficManagerLocal::Start() {
-  std::cout << "0005" << std::endl;  // TODO BE debug
+  // std::cout << "0005" << std::endl;  // TODO BE debug
   run_traffic_manger.store(true);
   worker_thread = std::make_unique<std::thread>(&TrafficManagerLocal::Run, this);
 }
@@ -156,15 +156,15 @@ void TrafficManagerLocal::Run() {
     bool synchronous_mode = parameters.GetSynchronousMode();
     bool hybrid_physics_mode = parameters.GetHybridPhysicsMode();
     parameters.SetMaxBoundaries(20.0f, episode_proxy.Lock()->GetEpisodeSettings().actor_active_distance);
-    std::cout << "500" << std::endl;  // TODO BE debug
+    // std::cout << "500" << std::endl;  // TODO BE debug
 
     // Wait for external trigger to initiate cycle in synchronous mode.
     if (synchronous_mode) {
-      std::cout << "590" << std::endl;  // TODO BE debug
+      // std::cout << "590" << std::endl;  // TODO BE debug
       while (current_frame.load() >= target_frame.load() and run_traffic_manger.load() and tm_synchronous.load()) {
         std::this_thread::yield(); // Wait for tick.
       }
-      std::cout << "current_frame: " << current_frame.load() << "target_frame: " << target_frame.load() << "tm_synchronous: " << tm_synchronous.load() << std::endl;  // TODO BE debug
+      // std::cout << "current_frame: " << current_frame.load() << "target_frame: " << target_frame.load() << "tm_synchronous: " << tm_synchronous.load() << std::endl;  // TODO BE debug
     }
 
     // Skipping velocity update if elapsed time is less than 0.05s in asynchronous, hybrid mode.
@@ -245,11 +245,9 @@ void TrafficManagerLocal::Run() {
     registration_lock.unlock();
     // Sending the current cycle's batch command to the simulator.
     if (synchronous_mode) {
-      std::cout << "511" << std::endl;  // TODO BE debug
       episode_proxy.Lock()->ApplyBatchSync(control_frame, false);
-      std::cout << "512" << std::endl;  // TODO BE debug
       ++current_frame;
-      std::cout << "513" << std::endl;  // TODO BE debug
+      // std::cout << "513" << std::endl;  // TODO BE debug
     } else {
       if (control_frame.size() > 0){
         episode_proxy.Lock()->ApplyBatchSync(control_frame, false);
@@ -259,20 +257,20 @@ void TrafficManagerLocal::Run() {
 }
 
 bool TrafficManagerLocal::SynchronousTick() {
-  if (parameters.GetSynchronousMode()) {
-    std::cout << "207" << std::endl;  // TODO BE debug
+  if (parameters.GetSynchronousMode() and run_traffic_manger.load()) {
+    // std::cout << "207" << std::endl;  // TODO BE debug
     // Wait for TM to be ready.
     ++target_frame;
     while (current_frame.load() < target_frame.load() and tm_synchronous.load() and run_traffic_manger.load()) {
       std::this_thread::yield(); // Wait for tick.
     }
-    std::cout << "SynchronousTick current_frame: " << current_frame.load() << " target_frame: " << target_frame.load() << " tm_synchronous: " << tm_synchronous.load() << std::endl;  // TODO BE debug
+    // std::cout << "SynchronousTick current_frame: " << current_frame.load() << " target_frame: " << target_frame.load() << " tm_synchronous: " << tm_synchronous.load() << std::endl;  // TODO BE debug
   }
   return true;
 }
 
 void TrafficManagerLocal::Stop() {
-  std::cout << "0003" << std::endl;  // TODO BE debug
+  // std::cout << "0003" << std::endl;  // TODO BE debug
 
   run_traffic_manger.store(false);
 
@@ -307,7 +305,7 @@ void TrafficManagerLocal::Stop() {
 }
 
 void TrafficManagerLocal::Release() {
-  std::cout << "0001" << std::endl;  // TODO BE debug
+  // std::cout << "0001" << std::endl;  // TODO BE debug
 
   Stop();
 
@@ -315,7 +313,7 @@ void TrafficManagerLocal::Release() {
 }
 
 void TrafficManagerLocal::Reset() {
-  std::cout << "0002" << std::endl;  // TODO BE debug
+  // std::cout << "0002" << std::endl;  // TODO BE debug
 
   Release();
   episode_proxy = episode_proxy.Lock()->GetCurrentEpisode();
@@ -477,7 +475,7 @@ bool TrafficManagerLocal::CheckAllFrozen(TLGroup tl_to_freeze) {
 }
 
 void TrafficManagerLocal::SetSynchronousMode(bool mode) {
-  std::cout << "0000" << std::endl;  // TODO BE debug
+  // std::cout << "0000" << std::endl;  // TODO BE debug
   parameters.SetSynchronousMode(mode);
   tm_synchronous.store(mode);
 }

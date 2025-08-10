@@ -181,7 +181,7 @@ public:
 
   /// Method to provide synchronous tick.
   bool SynchronousTick() {
-    std::cout << "406" << std::endl;  // TODO BE debug
+    // std::cout << "406" << std::endl;  // TODO BE debug
     DEBUG_ASSERT(_client != nullptr);
     return _client->call("synchronous_tick").as<bool>();
   }
