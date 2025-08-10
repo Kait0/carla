@@ -56,11 +56,9 @@ namespace detail {
     auto start = std::chrono::system_clock::now();
     std::cout << "301" << std::endl;  // TODO BE debug
     while (frame > episode.GetState()->GetTimestamp().frame) {
-      std::cout << "episode.GetState()->GetTimestamp().frame: " << episode.GetState()->GetTimestamp().frame << std::endl;  // TODO BE debug
       std::this_thread::yield();
       auto end = std::chrono::system_clock::now();
       auto diff = std::chrono::duration_cast<std::chrono::milliseconds>(end-start);
-      std::cout << "Time diff: " << diff.count() << " ms" << std::endl;  // TODO BE debug
 
       if(timeout.to_chrono() < diff) {
         std::cout << "303" << std::endl;  // TODO BE debug
