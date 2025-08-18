@@ -63,14 +63,13 @@ void TrafficManager::Reset() {
 }
 
 void TrafficManager::Tick() {
-  // std::cout << "400" << std::endl;  // TODO BE debug
+  std::cout << "400" << std::endl;  // TODO BE debug
   std::lock_guard<std::mutex> lock(_mutex);
-  // std::cout << "401" << std::endl;  // TODO BE debug
+  std::cout << "401" << std::endl;  // TODO BE debug
   int i = 0;
   for(auto& tm : _tm_map) {
-    // std::cout << "Traffic Manager: " << i << std::endl;  // TODO BE debug
     tm.second->SynchronousTick();
-    // std::cout << "402 " << std::endl;  // TODO BE debug
+    std::cout << "402 " << std::endl;  // TODO BE debug
   }
 }
 

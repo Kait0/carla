@@ -249,3 +249,12 @@ After CarlaDataProvider.get_world().tick():
 109
 109
 109
+
+
+WARNING: attempting to destroy an actor that is already dead: Actor 3295 (vehicle.chevrolet.impala)
+WARNING: attempting to unsubscribe from stream but sensor wasn't listening: Actor 1655 (sensor.other.collision)
+WARNING: attempting to destroy an actor that is already dead: Actor 2458 (walker.pedestrian.0035)
+
+ERROR: failed to destroy actor 3171 : unable to destroy actor: not found
+WARNING: Couldn't find the asked exit to be removed
+WARNING: Couldn't find the asked exit to be removed
