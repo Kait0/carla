@@ -258,3 +258,7 @@ WARNING: attempting to destroy an actor that is already dead: Actor 2458 (walker
 ERROR: failed to destroy actor 3171 : unable to destroy actor: not found
 WARNING: Couldn't find the asked exit to be removed
 WARNING: Couldn't find the asked exit to be removed
+
+
+current_frame.load(): 1target_frame.load(): 0
+current_frame.load(): 3target_frame.load(): 2
