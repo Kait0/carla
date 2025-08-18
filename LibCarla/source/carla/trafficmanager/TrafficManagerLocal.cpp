@@ -250,7 +250,7 @@ void TrafficManagerLocal::Run() {
       // TODO BE this should never happen. Unit test.
       if (current_frame.load() > target_frame.load())
       {
-         std::cerr << "current_frame.load(): " << current_frame.load() << "target_frame.load(): " << target_frame.load() << std::endl;  // TODO BE debug
+         std::cout << "current_frame.load(): " << current_frame.load() << "target_frame.load(): " << target_frame.load() << std::endl;  // TODO BE debug
       }
       std::cout << "513" << std::endl;  // TODO BE debug
     } else {
