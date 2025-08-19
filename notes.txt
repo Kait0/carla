@@ -13,6 +13,9 @@ make DebugSet
 CARLA
 make package  ARGS="--config=Debug --no-zip"
 
+make PythonAPI GENERATOR="Visual Studio 17 2022"
+make launch GENERATOR="Visual Studio 17 2022"
+
 objdump -h CarlaUE4-Linux-Shipping | grep debug
 
 https://github.com/carla-simulator/carla/issues/3322

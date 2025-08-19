@@ -161,7 +161,7 @@ void TrafficManagerLocal::Run() {
     // Wait for external trigger to initiate cycle in synchronous mode.
     if (synchronous_mode) {
       std::cout << "590" << std::endl;  // TODO BE debug
-      while (current_frame.load() >= target_frame.load() and run_traffic_manger.load() and tm_synchronous.load()) {
+      while (current_frame.load() >= target_frame.load() && run_traffic_manger.load() && tm_synchronous.load()) {
         std::this_thread::yield(); // Wait for tick.
       }
       std::cout << "current_frame: " << current_frame.load() << "target_frame: " << target_frame.load() << "tm_synchronous: " << tm_synchronous.load() << std::endl;  // TODO BE debug
@@ -262,11 +262,11 @@ void TrafficManagerLocal::Run() {
 }
 
 bool TrafficManagerLocal::SynchronousTick() {
-  if (parameters.GetSynchronousMode() and run_traffic_manger.load()) {
+  if (parameters.GetSynchronousMode() && run_traffic_manger.load()) {
     std::cout << "207" << std::endl;  // TODO BE debug
     // Wait for TM to be ready.
     ++target_frame;
-    while (current_frame.load() < target_frame.load() and tm_synchronous.load() and run_traffic_manger.load()) {
+    while (current_frame.load() < target_frame.load() && tm_synchronous.load() && run_traffic_manger.load()) {
       std::this_thread::yield(); // Wait for tick.
     }
     std::cout << "SynchronousTick current_frame: " << current_frame.load() << " target_frame: " << target_frame.load() << " tm_synchronous: " << tm_synchronous.load() << std::endl;  // TODO BE debug
