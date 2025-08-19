@@ -158,13 +158,17 @@ void TrafficManagerLocal::Run() {
     parameters.SetMaxBoundaries(20.0f, episode_proxy.Lock()->GetEpisodeSettings().actor_active_distance);
     std::cout << "500" << std::endl;  // TODO BE debug
 
+
     // Wait for external trigger to initiate cycle in synchronous mode.
     if (synchronous_mode) {
+      std::unique_lock<std::mutex> lock(step_execution_mutex);
+      //step_begin_trigger.wait(lock, [this]() {return step_begin.load() || !run_traffic_manger.load();}); // TODO BE: Edit
       std::cout << "590" << std::endl;  // TODO BE debug
-      while (current_frame.load() >= target_frame.load() && run_traffic_manger.load() && tm_synchronous.load()) {
+      while (!step_begin.load() && run_traffic_manger.load()) {
         std::this_thread::yield(); // Wait for tick.
       }
-      std::cout << "current_frame: " << current_frame.load() << "target_frame: " << target_frame.load() << "tm_synchronous: " << tm_synchronous.load() << std::endl;  // TODO BE debug
+      std::cout << "591" << std::endl;  // TODO BE debug
+      step_begin.store(false);
     }
 
     // Skipping velocity update if elapsed time is less than 0.05s in asynchronous, hybrid mode.
@@ -189,7 +193,6 @@ void TrafficManagerLocal::Run() {
 
     std::unique_lock<std::mutex> registration_lock(registration_mutex);
     // Updating simulation state, actor life cycle and performing necessary cleanup.
-
     alsm.Update();
 
     // Re-allocating inter-stage communication frames based on changed number of registered vehicles.
@@ -234,7 +237,6 @@ void TrafficManagerLocal::Run() {
     for (unsigned long index = 0u; index < vehicle_id_list.size(); ++index) {
       collision_stage.Update(index);
     }
-
     collision_stage.ClearCycleCache();
     vehicle_light_stage.UpdateWorldInfo();
     for (unsigned long index = 0u; index < vehicle_id_list.size(); ++index) {
@@ -242,17 +244,16 @@ void TrafficManagerLocal::Run() {
       motion_plan_stage.Update(index);
       vehicle_light_stage.Update(index);
     }
+
     registration_lock.unlock();
+
     // Sending the current cycle's batch command to the simulator.
     if (synchronous_mode) {
       episode_proxy.Lock()->ApplyBatchSync(control_frame, false);
-      ++current_frame;
-      // TODO BE this should never happen. Unit test.
-      if (current_frame.load() > target_frame.load())
-      {
-         std::cout << "current_frame.load(): " << current_frame.load() << "target_frame.load(): " << target_frame.load() << std::endl;  // TODO BE debug
-      }
+      std::cout << "512" << std::endl;  // TODO BE debug
+      step_end.store(true);
       std::cout << "513" << std::endl;  // TODO BE debug
+      //step_end_trigger.notify_one();
     } else {
       if (control_frame.size() > 0){
         episode_proxy.Lock()->ApplyBatchSync(control_frame, false);
@@ -262,22 +263,31 @@ void TrafficManagerLocal::Run() {
 }
 
 bool TrafficManagerLocal::SynchronousTick() {
-  if (parameters.GetSynchronousMode() && run_traffic_manger.load()) {
+  if (parameters.GetSynchronousMode()) {
     std::cout << "207" << std::endl;  // TODO BE debug
-    // Wait for TM to be ready.
-    ++target_frame;
-    while (current_frame.load() < target_frame.load() && tm_synchronous.load() && run_traffic_manger.load()) {
+    step_begin.store(true);
+    // step_begin_trigger.notify_one();  // TODO BE: Edit
+    std::unique_lock<std::mutex> lock(step_execution_mutex);
+    std::cout << "208" << std::endl;  // TODO BE debug
+    // TODO BE: Edit
+    while (!step_end.load()) {
       std::this_thread::yield(); // Wait for tick.
     }
-    std::cout << "SynchronousTick current_frame: " << current_frame.load() << " target_frame: " << target_frame.load() << " tm_synchronous: " << tm_synchronous.load() << std::endl;  // TODO BE debug
+    std::cout << "209" << std::endl;  // TODO BE debug
+    //step_end_trigger.wait(lock, [this]() { return step_end.load(); });   // TODO BE: Edit
+    step_end.store(false);
+    std::cout << "210" << std::endl;  // TODO BE debug
   }
   return true;
 }
 
 void TrafficManagerLocal::Stop() {
   std::cout << "0003" << std::endl;  // TODO BE debug
-
   run_traffic_manger.store(false);
+  // TODO BE: Edit
+  // if (parameters.GetSynchronousMode()) {
+  //   step_begin_trigger.notify_one();
+  // }
 
   if (worker_thread) {
     if (worker_thread->joinable()) {
@@ -285,6 +295,7 @@ void TrafficManagerLocal::Stop() {
     }
     worker_thread.release();
   }
+  std::cout << "0004" << std::endl;  // TODO BE debug
 
   vehicle_id_list.clear();
   registered_vehicles.Clear();
@@ -305,21 +316,19 @@ void TrafficManagerLocal::Stop() {
   tl_frame.clear();
   control_frame.clear();
 
-  current_frame.store(0u);
-  target_frame.store(0u);
+  run_traffic_manger.store(true);
+  step_begin.store(false);
+  step_end.store(false);
 }
 
 void TrafficManagerLocal::Release() {
   std::cout << "0001" << std::endl;  // TODO BE debug
-
   Stop();
 
   local_map.reset();
 }
 
 void TrafficManagerLocal::Reset() {
-  std::cout << "0002" << std::endl;  // TODO BE debug
-
   Release();
   episode_proxy = episode_proxy.Lock()->GetCurrentEpisode();
   world = cc::World(episode_proxy);
@@ -480,9 +489,14 @@ bool TrafficManagerLocal::CheckAllFrozen(TLGroup tl_to_freeze) {
 }
 
 void TrafficManagerLocal::SetSynchronousMode(bool mode) {
-  std::cout << "0000" << std::endl;  // TODO BE debug
+  std::cout << "0007" << std::endl;  // TODO BE debug
+  const bool previous_mode = parameters.GetSynchronousMode();
   parameters.SetSynchronousMode(mode);
-  tm_synchronous.store(mode);
+  if (previous_mode && !mode) {
+    step_begin.store(true);
+    // TODO BE: Edit
+    // step_begin_trigger.notify_one();
+  }
 }
 
 void TrafficManagerLocal::SetSynchronousModeTimeOutInMiliSecond(double time) {

@@ -100,15 +100,13 @@ private:
   /// Switch to turn on / turn off traffic manager.
   std::atomic<bool> run_traffic_manger{true};
   /// Flags to signal step begin and end.
-  // TODO BE new implementation
-  std::atomic<bool> tm_synchronous{false};
-  std::atomic<uint64_t> current_frame{0u};
-  std::atomic<uint64_t> target_frame{0u};
+  std::atomic<bool> step_begin{false};
+  std::atomic<bool> step_end{false};
   /// Mutex for progressing synchronous execution.
   std::mutex step_execution_mutex;
   /// Condition variables for progressing synchronous execution.
-  std::condition_variable step_begin_trigger;
-  std::condition_variable step_end_trigger;
+  // std::condition_variable step_begin_trigger; // TODO BE: Edit
+  // std::condition_variable step_end_trigger; // TODO BE: Edit
   /// Single worker thread for sequential execution of sub-components.
   std::unique_ptr<std::thread> worker_thread;
   /// Randomization seed.
