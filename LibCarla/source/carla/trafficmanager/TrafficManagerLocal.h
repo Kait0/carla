@@ -103,7 +103,7 @@ private:
   std::atomic<bool> step_begin{false};
   std::atomic<bool> step_end{false};
   /// Mutex for progressing synchronous execution.
-  std::mutex step_execution_mutex;
+  // std::mutex step_execution_mutex;
   /// Condition variables for progressing synchronous execution.
   // std::condition_variable step_begin_trigger; // TODO BE: Edit
   // std::condition_variable step_end_trigger; // TODO BE: Edit

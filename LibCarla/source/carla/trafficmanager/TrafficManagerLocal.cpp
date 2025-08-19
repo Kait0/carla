@@ -161,7 +161,7 @@ void TrafficManagerLocal::Run() {
 
     // Wait for external trigger to initiate cycle in synchronous mode.
     if (synchronous_mode) {
-      std::unique_lock<std::mutex> lock(step_execution_mutex);
+      // std::unique_lock<std::mutex> lock(step_execution_mutex);
       //step_begin_trigger.wait(lock, [this]() {return step_begin.load() || !run_traffic_manger.load();}); // TODO BE: Edit
       std::cout << "590" << std::endl;  // TODO BE debug
       while (!step_begin.load() && run_traffic_manger.load()) {
@@ -267,7 +267,7 @@ bool TrafficManagerLocal::SynchronousTick() {
     std::cout << "207" << std::endl;  // TODO BE debug
     step_begin.store(true);
     // step_begin_trigger.notify_one();  // TODO BE: Edit
-    std::unique_lock<std::mutex> lock(step_execution_mutex);
+    // std::unique_lock<std::mutex> lock(step_execution_mutex);
     std::cout << "208" << std::endl;  // TODO BE debug
     // TODO BE: Edit
     while (!step_end.load()) {
