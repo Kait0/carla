@@ -170,7 +170,7 @@ namespace client {
         _episode.Lock()->GetNetworkingTimeout() : timeout;
     uint64_t test = _episode.Lock()->Tick(local_timeout); // TODO BE debug
     std::cout << "109" << std::endl;  // TODO BE debug
-    return test
+    return test;
   }
 
   void World::SetPedestriansCrossFactor(float percentage) {
