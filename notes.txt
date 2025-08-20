@@ -29,6 +29,7 @@ Default 93 Threads, 265% CPU usage
 
 -RPCThreads=1 -StreamingThreads=1 -SecondaryThreads=1 -workersthreadpool 1 => 46 threads 240% usage
 
+Maps: /home/jaeger/ordnung/internal/custom_carla_0_9_15/carla/Unreal/CarlaUE4/Content/Carla/Maps/OpenDrive/Town01.xodr
 
 CARLA error:
 
