@@ -12,6 +12,8 @@ make DebugSet
 
 CARLA
 make package  ARGS="--config=Debug --no-zip"
+make package  ARGS="--no-zip"
+make package  ARGS="--config=Debug --no-zip --packages=Carla,AdditionalMaps --target-archive=AdditionalMaps --clean-intermediate"
 
 make PythonAPI GENERATOR="Visual Studio 17 2022"
 make launch GENERATOR="Visual Studio 17 2022"
