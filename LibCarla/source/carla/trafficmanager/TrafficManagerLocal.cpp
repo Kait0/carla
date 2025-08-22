@@ -12,8 +12,6 @@
 
 #include "carla/trafficmanager/TrafficManagerLocal.h"
 
-// TODO BE debug
-#include <iostream>
 #include <thread>
 
 namespace carla {
@@ -137,7 +135,6 @@ void TrafficManagerLocal::SetupLocalMap() {
 }
 
 void TrafficManagerLocal::Start() {
-  std::cout << "0005" << std::endl;  // TODO BE debug
   run_traffic_manger.store(true);
   worker_thread = std::make_unique<std::thread>(&TrafficManagerLocal::Run, this);
 }
@@ -156,18 +153,15 @@ void TrafficManagerLocal::Run() {
     bool synchronous_mode = parameters.GetSynchronousMode();
     bool hybrid_physics_mode = parameters.GetHybridPhysicsMode();
     parameters.SetMaxBoundaries(20.0f, episode_proxy.Lock()->GetEpisodeSettings().actor_active_distance);
-    std::cout << "500" << std::endl;  // TODO BE debug
 
 
     // Wait for external trigger to initiate cycle in synchronous mode.
     if (synchronous_mode) {
       // std::unique_lock<std::mutex> lock(step_execution_mutex);
       //step_begin_trigger.wait(lock, [this]() {return step_begin.load() || !run_traffic_manger.load();}); // TODO BE: Edit
-      std::cout << "590" << std::endl;  // TODO BE debug
       while (!step_begin.load() && run_traffic_manger.load()) {
         std::this_thread::yield(); // Wait for tick.
       }
-      std::cout << "591" << std::endl;  // TODO BE debug
       step_begin.store(false);
     }
 
@@ -250,9 +244,7 @@ void TrafficManagerLocal::Run() {
     // Sending the current cycle's batch command to the simulator.
     if (synchronous_mode) {
       episode_proxy.Lock()->ApplyBatchSync(control_frame, false);
-      std::cout << "512" << std::endl;  // TODO BE debug
       step_end.store(true);
-      std::cout << "513" << std::endl;  // TODO BE debug
       //step_end_trigger.notify_one();
     } else {
       if (control_frame.size() > 0){
@@ -264,25 +256,20 @@ void TrafficManagerLocal::Run() {
 
 bool TrafficManagerLocal::SynchronousTick() {
   if (parameters.GetSynchronousMode()) {
-    std::cout << "207" << std::endl;  // TODO BE debug
     step_begin.store(true);
     // step_begin_trigger.notify_one();  // TODO BE: Edit
     // std::unique_lock<std::mutex> lock(step_execution_mutex);
-    std::cout << "208" << std::endl;  // TODO BE debug
     // TODO BE: Edit
     while (!step_end.load()) {
       std::this_thread::yield(); // Wait for tick.
     }
-    std::cout << "209" << std::endl;  // TODO BE debug
     //step_end_trigger.wait(lock, [this]() { return step_end.load(); });   // TODO BE: Edit
     step_end.store(false);
-    std::cout << "210" << std::endl;  // TODO BE debug
   }
   return true;
 }
 
 void TrafficManagerLocal::Stop() {
-  std::cout << "0003" << std::endl;  // TODO BE debug
   run_traffic_manger.store(false);
   // TODO BE: Edit
   // if (parameters.GetSynchronousMode()) {
@@ -295,7 +282,6 @@ void TrafficManagerLocal::Stop() {
     }
     worker_thread.release();
   }
-  std::cout << "0004" << std::endl;  // TODO BE debug
 
   vehicle_id_list.clear();
   registered_vehicles.Clear();
@@ -322,7 +308,6 @@ void TrafficManagerLocal::Stop() {
 }
 
 void TrafficManagerLocal::Release() {
-  std::cout << "0001" << std::endl;  // TODO BE debug
   Stop();
 
   local_map.reset();
@@ -489,7 +474,6 @@ bool TrafficManagerLocal::CheckAllFrozen(TLGroup tl_to_freeze) {
 }
 
 void TrafficManagerLocal::SetSynchronousMode(bool mode) {
-  std::cout << "0007" << std::endl;  // TODO BE debug
   const bool previous_mode = parameters.GetSynchronousMode();
   parameters.SetSynchronousMode(mode);
   if (previous_mode && !mode) {

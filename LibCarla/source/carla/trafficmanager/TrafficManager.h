@@ -14,9 +14,6 @@
 #include "carla/trafficmanager/Constants.h"
 #include "carla/trafficmanager/TrafficManagerBase.h"
 
-// TODO BE debug
-#include <iostream>
-
 namespace carla {
 namespace traffic_manager {
 
@@ -308,9 +305,7 @@ public:
   /// Method to provide synchronous tick.
   bool SynchronousTick() {
     TrafficManagerBase* tm_ptr = GetTM(_port);
-    std::cout << "405" << std::endl;  // TODO BE debug
     if(tm_ptr != nullptr){
-      std::cout << "406" << std::endl;  // TODO BE debug
       return tm_ptr->SynchronousTick();
     }
     return false;
