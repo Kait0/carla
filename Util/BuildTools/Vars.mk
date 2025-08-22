@@ -1,5 +1,6 @@
 # Here CURDIR is assumed to be the root folder of the project.
 
+UE4_ROOT=/home/jaeger/UnrealEngine_4.26
 CARLA_ROOT_FOLDER=${CURDIR}
 CARLA_BUILD_FOLDER=${CURDIR}/Build
 CARLA_DIST_FOLDER=${CURDIR}/Dist

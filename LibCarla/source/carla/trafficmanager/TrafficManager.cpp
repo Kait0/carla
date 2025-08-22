@@ -16,7 +16,6 @@
 #include "carla/trafficmanager/TrafficManagerLocal.h"
 #include "carla/trafficmanager/TrafficManagerRemote.h"
 
-// TODO BE debug
 #include <iostream>
 
 #define DEBUG_PRINT_TM  0
@@ -63,13 +62,10 @@ void TrafficManager::Reset() {
 }
 
 void TrafficManager::Tick() {
-  std::cout << "400" << std::endl;  // TODO BE debug
   std::lock_guard<std::mutex> lock(_mutex);
-  std::cout << "401" << std::endl;  // TODO BE debug
   int i = 0;
   for(auto& tm : _tm_map) {
     tm.second->SynchronousTick();
-    std::cout << "402 " << std::endl;  // TODO BE debug
   }
 }
 
