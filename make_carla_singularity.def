@@ -24,6 +24,7 @@ From: ubuntu:18.04
     wget \
     unzip \
     curl \
+    vulkan-utils \
     python3 \
     python3-pip \
     python3-dev \
@@ -64,6 +65,8 @@ From: ubuntu:18.04
     xdg-user-dirs \
     ca-certificates \
     xdg-utils \
+    automake \
+    libtool \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
