@@ -1,5 +1,5 @@
 Bootstrap: docker
-From: ubuntu:22.04
+From: ubuntu:18.04
 
 
 %environment
@@ -36,7 +36,6 @@ From: ubuntu:22.04
     rsync \
     libvulkan1 \
     libxml2-dev \
-    vulkan-tools \
     xvfb \
     x11-utils \
     libglu1-mesa \
@@ -68,7 +67,8 @@ From: ubuntu:22.04
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-    pip install --no-cache-dir \
+    python3 -m pip install --upgrade --user pip
+    pip3 install --no-cache-dir \
         numpy \
         pygame \
         protobuf
