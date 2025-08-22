@@ -17,6 +17,7 @@ make package  ARGS="--config=Debug --no-zip --packages=Carla,AdditionalMaps --ta
 
 make PythonAPI GENERATOR="Visual Studio 17 2022"
 make launch GENERATOR="Visual Studio 17 2022"
+sudo singularity build custom_carla_container.sif make_carla_singularity.def
 
 objdump -h CarlaUE4-Linux-Shipping | grep debug
 
