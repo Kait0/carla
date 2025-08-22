@@ -54,3 +54,5 @@ profiler.csv
 .env
 .venv
 devcontainer.json
+
+custom_carla_container.sif
