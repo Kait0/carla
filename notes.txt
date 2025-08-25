@@ -11,9 +11,11 @@ I might need to build UnrealEngine in debug with
 make DebugSet
 
 CARLA
-make package  ARGS="--config=Debug --no-zip"
+make package  ARGS="--config=Debug --no-zip --packages=Carla,AdditionalMaps"
 make package  ARGS="--no-zip"
 make package  ARGS="--config=Debug --no-zip --packages=Carla,AdditionalMaps --target-archive=AdditionalMaps --clean-intermediate"
+
+sudo singularity build /home/jaeger/ordnung/internal/custom_carla_0_9_15/carla/custom_carla_container.sif make_carla_singularity.def
 
 make PythonAPI GENERATOR="Visual Studio 17 2022"
 make launch GENERATOR="Visual Studio 17 2022"
