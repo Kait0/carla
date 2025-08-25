@@ -3,6 +3,9 @@
 
 #include "carla/trafficmanager/LocalizationStage.h"
 
+// TODO BE debug
+#include <iostream>
+
 namespace carla {
 namespace traffic_manager {
 
@@ -35,6 +38,8 @@ LocalizationStage::LocalizationStage(
 
 void LocalizationStage::Update(const unsigned long index) {
 
+  std::cout << "L000" << std::endl;  // TODO BE debug
+
   const ActorId actor_id = vehicle_id_list.at(index);
   const cg::Location vehicle_location = simulation_state.GetLocation(actor_id);
   const cg::Vector3D heading_vector = simulation_state.GetHeading(actor_id);
@@ -64,6 +69,8 @@ void LocalizationStage::Update(const unsigned long index) {
     }
   }
 
+  std::cout << "L001" << std::endl;  // TODO BE debug
+
   bool is_at_junction_entrance = false;
   if (!waypoint_buffer.empty()) {
     // Purge passed waypoints.
@@ -74,6 +81,8 @@ void LocalizationStage::Update(const unsigned long index) {
         dot_product = DeviationDotProduct(vehicle_location, heading_vector, waypoint_buffer.front()->GetLocation());
       }
     }
+
+    std::cout << "L002" << std::endl;  // TODO BE debug
 
     if (!waypoint_buffer.empty()) {
       // Determine if the vehicle is at the entrance of a junction.
@@ -95,6 +104,7 @@ void LocalizationStage::Update(const unsigned long index) {
       }
     }
 
+    std::cout << "L003" << std::endl;  // TODO BE debug
     // Purge waypoints too far from the front of the buffer, but not if it has reached a junction.
     while (!is_at_junction_entrance
            && !waypoint_buffer.empty()
@@ -155,6 +165,8 @@ void LocalizationStage::Update(const unsigned long index) {
   bool auto_or_force_lane_change = parameters.GetAutoLaneChange(actor_id) || force_lane_change;
   bool front_waypoint_not_junction = !front_waypoint->CheckJunction();
 
+  std::cout << "L004" << std::endl;  // TODO BE debug
+
   if (auto_or_force_lane_change
       && front_waypoint_not_junction
       && (recently_not_executed_lane_change || done_with_previous_lane_change)) {
@@ -179,13 +191,16 @@ void LocalizationStage::Update(const unsigned long index) {
   Path imported_path = parameters.GetCustomPath(actor_id);
   Route imported_actions = parameters.GetImportedRoute(actor_id);
   // We are effectively importing a path.
+  std::cout << "L005" << std::endl;  // TODO BE debug
+
   if (!imported_path.empty()) {
 
     ImportPath(imported_path, waypoint_buffer, actor_id, horizon_square);
-
+    std::cout << "L006" << std::endl;  // TODO BE debug
   } else if (!imported_actions.empty()) {
 
     ImportRoute(imported_actions, waypoint_buffer, actor_id, horizon_square);
+    std::cout << "L007" << std::endl;  // TODO BE debug
 
   }
 
@@ -213,8 +228,11 @@ void LocalizationStage::Update(const unsigned long index) {
         break;
       }
     }
+    std::cout << "L008" << std::endl;  // TODO BE debug
+
   }
   ExtendAndFindSafeSpace(actor_id, is_at_junction_entrance, waypoint_buffer);
+  std::cout << "L009" << std::endl;  // TODO BE debug
 
   // Editing output array
   LocalizationData &output = output_array.at(index);
@@ -231,6 +249,7 @@ void LocalizationStage::Update(const unsigned long index) {
 
   // Updating geodesic grid position for actor.
   track_traffic.UpdateGridPosition(actor_id, waypoint_buffer);
+  std::cout << "L010" << std::endl;  // TODO BE debug
 }
 
 void LocalizationStage::ExtendAndFindSafeSpace(const ActorId actor_id,
