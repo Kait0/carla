@@ -209,6 +209,7 @@ void LocalizationStage::Update(const unsigned long index) {
   else {
     std::cout << "L200 horizon_square: " << horizon_square << std::endl;  // TODO BE debug
     std::cout << "waypoint_buffer contains " << waypoint_buffer.size() << " elements."  << std::endl;
+    int i = 0;
     while (waypoint_buffer.back()->DistanceSquared(waypoint_buffer.front()) <= horizon_square) {
       SimpleWaypointPtr furthest_waypoint = waypoint_buffer.back();
       std::vector<SimpleWaypointPtr> next_waypoints = furthest_waypoint->GetNextWaypoint();
@@ -231,6 +232,20 @@ void LocalizationStage::Update(const unsigned long index) {
         // Found a loop, stop. Don't use zero distance as there can be two waypoints at the same location
         break;
       }
+      i++;
+      if (i > 10000)
+      {
+        std::cout << "Deadlock" << std::endl;  // TODO BE debug
+        std::cout << "L200 horizon_square: " << horizon_square << std::endl;  // TODO BE debug
+        std::cout << "waypoint_buffer contains " << waypoint_buffer.size() << " elements."  << std::endl;
+        std::cout << "L200 Waypoint distance: " << waypoint_buffer.back()->DistanceSquared(waypoint_buffer.front()) << std::endl;  // TODO BE debug
+        break;
+      }
+    }
+    // TODO BE debug
+    while(i > 10000)
+    {
+      // Make sure timeout still happens.
     }
     std::cout << "L008" << std::endl;  // TODO BE debug
 
