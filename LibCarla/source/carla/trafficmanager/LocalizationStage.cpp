@@ -497,17 +497,21 @@ SimpleWaypointPtr LocalizationStage::AssignLaneChange(const ActorId actor_id,
 void LocalizationStage::ImportPath(Path &imported_path, Buffer &waypoint_buffer, const ActorId actor_id, const float horizon_square) {
     // Remove the waypoints already added to the path, except for the first.
     if (parameters.GetUploadPath(actor_id)) {
+      std::cout << "L301" << std::endl;  // TODO BE debug
       auto number_of_pops = waypoint_buffer.size();
       for (uint64_t j = 0u; j < number_of_pops - 1; ++j) {
         PopWaypoint(actor_id, track_traffic, waypoint_buffer, false);
       }
+      std::cout << "L302" << std::endl;  // TODO BE debug
       // We have successfully imported the path. Remove it from the list of paths to be imported.
       parameters.RemoveUploadPath(actor_id, false);
     }
-
+    std::cout << "L303" << std::endl;  // TODO BE debug
     // Get the latest imported waypoint. and find its closest waypoint in TM's InMemoryMap.
     cg::Location latest_imported = imported_path.front();
     SimpleWaypointPtr imported = local_map->GetWaypoint(latest_imported);
+    std::cout << "L304: horizon_square" << horizon_square << std::endl;  // TODO BE debug
+    std::cout << "L305: waypoint_buffer.back()->DistanceSquared(waypoint_buffer.front())" << waypoint_buffer.back()->DistanceSquared(waypoint_buffer.front()) << std::endl;  // TODO BE debug
 
     // We need to generate a path compatible with TM's waypoints.
     while (!imported_path.empty() && waypoint_buffer.back()->DistanceSquared(waypoint_buffer.front()) <= horizon_square) {
@@ -520,19 +524,28 @@ void LocalizationStage::ImportPath(Path &imported_path, Buffer &waypoint_buffer,
 
       // Choose correct path.
       if (next_waypoints.size() > 1) {
+        std::cout << "L306" << std::endl;  // TODO BE debug
         const float imported_road_id = imported->GetWaypoint()->GetRoadId();
         float min_distance = std::numeric_limits<float>::infinity();
+        std::cout << "L307" << std::endl;  // TODO BE debug
         for (uint64_t k = 0u; k < next_waypoints.size(); ++k) {
+          std::cout << "L308" << std::endl;  // TODO BE debug
           SimpleWaypointPtr junction_end_point = next_waypoints.at(k);
           while (!junction_end_point->CheckJunction()) {
             junction_end_point = junction_end_point->GetNextWaypoint().front();
           }
+          std::cout << "L309" << std::endl;  // TODO BE debug
+
           while (junction_end_point->CheckJunction()) {
             junction_end_point = junction_end_point->GetNextWaypoint().front();
           }
+          std::cout << "L310" << std::endl;  // TODO BE debug
+
           while (next_waypoints.at(k)->DistanceSquared(junction_end_point) < 50.0f) {
             junction_end_point = junction_end_point->GetNextWaypoint().front();
           }
+          std::cout << "L311" << std::endl;  // TODO BE debug
+
           float jep_road_id = junction_end_point->GetWaypoint()->GetRoadId();
           if (jep_road_id == imported_road_id) {
             selection_index = k;
@@ -543,38 +556,54 @@ void LocalizationStage::ImportPath(Path &imported_path, Buffer &waypoint_buffer,
             min_distance = distance;
             selection_index = k;
           }
+          std::cout << "L312" << std::endl;  // TODO BE debug
         }
       } else if (next_waypoints.size() == 0) {
+        std::cout << "L313" << std::endl;  // TODO BE debug
         if (!parameters.GetOSMMode()) {
           std::cout << "This map has dead-end roads, please change the set_open_street_map parameter to true" << std::endl;
         }
         marked_for_removal.push_back(actor_id);
         break;
       }
+      std::cout << "L314" << std::endl;  // TODO BE debug
+
       SimpleWaypointPtr next_wp_selection = next_waypoints.at(selection_index);
 
       // Remove the imported waypoint from the path if it's close to the last one.
       if (next_wp_selection->DistanceSquared(imported) < 30.0f) {
+        std::cout << "L315" << std::endl;  // TODO BE debug
         imported_path.erase(imported_path.begin());
         std::vector<SimpleWaypointPtr> possible_waypoints = next_wp_selection->GetNextWaypoint();
         if (std::find(possible_waypoints.begin(), possible_waypoints.end(), imported) != possible_waypoints.end()) {
+          std::cout << "L316" << std::endl;  // TODO BE debug
           // If the lane is changing, only push the new waypoint
           PushWaypoint(actor_id, track_traffic, waypoint_buffer, next_wp_selection);
         }
+        std::cout << "L317" << std::endl;  // TODO BE debug
         PushWaypoint(actor_id, track_traffic, waypoint_buffer, imported);
+        std::cout << "L318" << std::endl;  // TODO BE debug
         latest_imported = imported_path.front();
         imported = local_map->GetWaypoint(latest_imported);
       } else {
+        std::cout << "L319" << std::endl;  // TODO BE debug
+
         PushWaypoint(actor_id, track_traffic, waypoint_buffer, next_wp_selection);
       }
+      std::cout << "L321" << std::endl;  // TODO BE debug
+
     }
+    std::cout << "L322" << std::endl;  // TODO BE debug
     if (imported_path.empty()) {
+      std::cout << "L323" << std::endl;  // TODO BE debug
       // Once we are done, check if we can clear the structure.
       parameters.RemoveUploadPath(actor_id, true);
     } else {
+      std::cout << "L324" << std::endl;  // TODO BE debug
       // Otherwise, update the structure with the waypoints that we still need to import.
       parameters.UpdateUploadPath(actor_id, imported_path);
     }
+  std::cout << "L325" << std::endl;  // TODO BE debug
 }
 
 void LocalizationStage::ImportRoute(Route &imported_actions, Buffer &waypoint_buffer, const ActorId actor_id, const float horizon_square) {
