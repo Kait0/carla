@@ -194,11 +194,12 @@ void LocalizationStage::Update(const unsigned long index) {
   std::cout << "L005" << std::endl;  // TODO BE debug
 
   if (!imported_path.empty()) {
+    std::cout << "L106" << std::endl;  // TODO BE debug
 
     ImportPath(imported_path, waypoint_buffer, actor_id, horizon_square);
     std::cout << "L006" << std::endl;  // TODO BE debug
   } else if (!imported_actions.empty()) {
-
+    std::cout << "L107" << std::endl;  // TODO BE debug
     ImportRoute(imported_actions, waypoint_buffer, actor_id, horizon_square);
     std::cout << "L007" << std::endl;  // TODO BE debug
 
@@ -206,6 +207,8 @@ void LocalizationStage::Update(const unsigned long index) {
 
   // Populating the buffer through randomly chosen waypoints.
   else {
+    std::cout << "L200 horizon_square: " << horizon_square << std::endl;  // TODO BE debug
+    std::cout << "waypoint_buffer contains " << waypoint_buffer.size() << " elements."  << std::endl;
     while (waypoint_buffer.back()->DistanceSquared(waypoint_buffer.front()) <= horizon_square) {
       SimpleWaypointPtr furthest_waypoint = waypoint_buffer.back();
       std::vector<SimpleWaypointPtr> next_waypoints = furthest_waypoint->GetNextWaypoint();
@@ -218,6 +221,7 @@ void LocalizationStage::Update(const unsigned long index) {
         if (!parameters.GetOSMMode()) {
           std::cout << "This map has dead-end roads, please change the set_open_street_map parameter to true" << std::endl;
         }
+        std::cout << "L201" << std::endl;  // TODO BE debug
         marked_for_removal.push_back(actor_id);
         break;
       }
