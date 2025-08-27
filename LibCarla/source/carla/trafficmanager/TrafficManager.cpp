@@ -63,7 +63,6 @@ void TrafficManager::Reset() {
 
 void TrafficManager::Tick() {
   std::lock_guard<std::mutex> lock(_mutex);
-  int i = 0;
   for(auto& tm : _tm_map) {
     tm.second->SynchronousTick();
   }

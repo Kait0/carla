@@ -275,3 +275,19 @@ WARNING: Couldn't find the asked exit to be removed
 
 current_frame.load(): 1target_frame.load(): 0
 current_frame.load(): 3target_frame.load(): 2
+
+
+
+Killed
+LowLevelFatalError [File:Unknown] [Line: 136] 
+Exception thrown: bind: Address already in use
+Signal 11 caught.
+Malloc Size=65538 LargeMemoryPoolOffset=65554 
+/mnt/beegfs/home/jaeger/custom_carla_0_9_15/carla/Dist/CARLA_Shipping_0.9.15-399-gce76bf592-dirty/LinuxNoEditor/CarlaUE4.sh: line 5: 4091684 Segmentation fault      (core dumped) "$UE4_PROJECT_ROOT/CarlaUE4/Binaries/Linux/CarlaUE4-Linux-Shipping" CarlaUE4 "$@"
+
+LowLevelFatalError [File:Unknown] [Line: 136] 
+Exception thrown: bind: Address already in use
+Signal 11 caught.
+Malloc Size=65538 LargeMemoryPoolOffset=65554 
+
+ --net --network=bridge
