@@ -471,6 +471,8 @@ void LocalizationStage::ImportPath(Path &imported_path, Buffer &waypoint_buffer,
     cg::Location latest_imported = imported_path.front();
     SimpleWaypointPtr imported = local_map->GetWaypoint(latest_imported);
 
+    // TODO BE This function can end in an endless loop.
+    int i = 0;
     // We need to generate a path compatible with TM's waypoints.
     while (!imported_path.empty() && waypoint_buffer.back()->DistanceSquared(waypoint_buffer.front()) <= horizon_square) {
       // Get the latest point we added to the list. If starting, this will be the one referred to the vehicle's location.
@@ -528,6 +530,14 @@ void LocalizationStage::ImportPath(Path &imported_path, Buffer &waypoint_buffer,
         imported = local_map->GetWaypoint(latest_imported);
       } else {
         PushWaypoint(actor_id, track_traffic, waypoint_buffer, next_wp_selection);
+      }
+
+      i++; // TODO BE debug
+      if (i>1000) // TODO BE might need to tune. Check how often this occurs.
+      {
+        std::cout << "Bad vehicle route caused endless loop." << std::endl;
+        marked_for_removal.push_back(actor_id);
+        break;  
       }
     }
     if (imported_path.empty()) {
