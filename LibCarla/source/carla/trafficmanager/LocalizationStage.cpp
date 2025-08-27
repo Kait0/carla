@@ -38,8 +38,6 @@ LocalizationStage::LocalizationStage(
 
 void LocalizationStage::Update(const unsigned long index) {
 
-  std::cout << "L000" << std::endl;  // TODO BE debug
-
   const ActorId actor_id = vehicle_id_list.at(index);
   const cg::Location vehicle_location = simulation_state.GetLocation(actor_id);
   const cg::Vector3D heading_vector = simulation_state.GetHeading(actor_id);
@@ -69,8 +67,6 @@ void LocalizationStage::Update(const unsigned long index) {
     }
   }
 
-  std::cout << "L001" << std::endl;  // TODO BE debug
-
   bool is_at_junction_entrance = false;
   if (!waypoint_buffer.empty()) {
     // Purge passed waypoints.
@@ -81,8 +77,6 @@ void LocalizationStage::Update(const unsigned long index) {
         dot_product = DeviationDotProduct(vehicle_location, heading_vector, waypoint_buffer.front()->GetLocation());
       }
     }
-
-    std::cout << "L002" << std::endl;  // TODO BE debug
 
     if (!waypoint_buffer.empty()) {
       // Determine if the vehicle is at the entrance of a junction.
@@ -104,7 +98,6 @@ void LocalizationStage::Update(const unsigned long index) {
       }
     }
 
-    std::cout << "L003" << std::endl;  // TODO BE debug
     // Purge waypoints too far from the front of the buffer, but not if it has reached a junction.
     while (!is_at_junction_entrance
            && !waypoint_buffer.empty()
@@ -165,8 +158,6 @@ void LocalizationStage::Update(const unsigned long index) {
   bool auto_or_force_lane_change = parameters.GetAutoLaneChange(actor_id) || force_lane_change;
   bool front_waypoint_not_junction = !front_waypoint->CheckJunction();
 
-  std::cout << "L004" << std::endl;  // TODO BE debug
-
   if (auto_or_force_lane_change
       && front_waypoint_not_junction
       && (recently_not_executed_lane_change || done_with_previous_lane_change)) {
@@ -191,24 +182,15 @@ void LocalizationStage::Update(const unsigned long index) {
   Path imported_path = parameters.GetCustomPath(actor_id);
   Route imported_actions = parameters.GetImportedRoute(actor_id);
   // We are effectively importing a path.
-  std::cout << "L005" << std::endl;  // TODO BE debug
 
   if (!imported_path.empty()) {
-    std::cout << "L106" << std::endl;  // TODO BE debug
-
     ImportPath(imported_path, waypoint_buffer, actor_id, horizon_square);
-    std::cout << "L006" << std::endl;  // TODO BE debug
   } else if (!imported_actions.empty()) {
-    std::cout << "L107" << std::endl;  // TODO BE debug
     ImportRoute(imported_actions, waypoint_buffer, actor_id, horizon_square);
-    std::cout << "L007" << std::endl;  // TODO BE debug
-
   }
 
   // Populating the buffer through randomly chosen waypoints.
   else {
-    std::cout << "L200 horizon_square: " << horizon_square << std::endl;  // TODO BE debug
-    std::cout << "waypoint_buffer contains " << waypoint_buffer.size() << " elements."  << std::endl;
     int i = 0;
     while (waypoint_buffer.back()->DistanceSquared(waypoint_buffer.front()) <= horizon_square) {
       SimpleWaypointPtr furthest_waypoint = waypoint_buffer.back();
@@ -222,7 +204,6 @@ void LocalizationStage::Update(const unsigned long index) {
         if (!parameters.GetOSMMode()) {
           std::cout << "This map has dead-end roads, please change the set_open_street_map parameter to true" << std::endl;
         }
-        std::cout << "L201" << std::endl;  // TODO BE debug
         marked_for_removal.push_back(actor_id);
         break;
       }
@@ -232,26 +213,9 @@ void LocalizationStage::Update(const unsigned long index) {
         // Found a loop, stop. Don't use zero distance as there can be two waypoints at the same location
         break;
       }
-      i++;
-      if (i > 10000)
-      {
-        std::cout << "Deadlock" << std::endl;  // TODO BE debug
-        std::cout << "L200 horizon_square: " << horizon_square << std::endl;  // TODO BE debug
-        std::cout << "waypoint_buffer contains " << waypoint_buffer.size() << " elements."  << std::endl;
-        std::cout << "L200 Waypoint distance: " << waypoint_buffer.back()->DistanceSquared(waypoint_buffer.front()) << std::endl;  // TODO BE debug
-        break;
-      }
     }
-    // TODO BE debug
-    while(i > 10000)
-    {
-      // Make sure timeout still happens.
-    }
-    std::cout << "L008" << std::endl;  // TODO BE debug
-
   }
   ExtendAndFindSafeSpace(actor_id, is_at_junction_entrance, waypoint_buffer);
-  std::cout << "L009" << std::endl;  // TODO BE debug
 
   // Editing output array
   LocalizationData &output = output_array.at(index);
@@ -268,7 +232,6 @@ void LocalizationStage::Update(const unsigned long index) {
 
   // Updating geodesic grid position for actor.
   track_traffic.UpdateGridPosition(actor_id, waypoint_buffer);
-  std::cout << "L010" << std::endl;  // TODO BE debug
 }
 
 void LocalizationStage::ExtendAndFindSafeSpace(const ActorId actor_id,
@@ -497,21 +460,16 @@ SimpleWaypointPtr LocalizationStage::AssignLaneChange(const ActorId actor_id,
 void LocalizationStage::ImportPath(Path &imported_path, Buffer &waypoint_buffer, const ActorId actor_id, const float horizon_square) {
     // Remove the waypoints already added to the path, except for the first.
     if (parameters.GetUploadPath(actor_id)) {
-      std::cout << "L301" << std::endl;  // TODO BE debug
       auto number_of_pops = waypoint_buffer.size();
       for (uint64_t j = 0u; j < number_of_pops - 1; ++j) {
         PopWaypoint(actor_id, track_traffic, waypoint_buffer, false);
       }
-      std::cout << "L302" << std::endl;  // TODO BE debug
       // We have successfully imported the path. Remove it from the list of paths to be imported.
       parameters.RemoveUploadPath(actor_id, false);
     }
-    std::cout << "L303" << std::endl;  // TODO BE debug
     // Get the latest imported waypoint. and find its closest waypoint in TM's InMemoryMap.
     cg::Location latest_imported = imported_path.front();
     SimpleWaypointPtr imported = local_map->GetWaypoint(latest_imported);
-    std::cout << "L304: horizon_square" << horizon_square << std::endl;  // TODO BE debug
-    std::cout << "L305: waypoint_buffer.back()->DistanceSquared(waypoint_buffer.front())" << waypoint_buffer.back()->DistanceSquared(waypoint_buffer.front()) << std::endl;  // TODO BE debug
 
     // We need to generate a path compatible with TM's waypoints.
     // TODO BE This function can end in an endless loop.
@@ -526,27 +484,21 @@ void LocalizationStage::ImportPath(Path &imported_path, Buffer &waypoint_buffer,
 
       // Choose correct path.
       if (next_waypoints.size() > 1) {
-        std::cout << "L306" << std::endl;  // TODO BE debug
         const float imported_road_id = imported->GetWaypoint()->GetRoadId();
         float min_distance = std::numeric_limits<float>::infinity();
-        std::cout << "L307" << std::endl;  // TODO BE debug
         for (uint64_t k = 0u; k < next_waypoints.size(); ++k) {
-          std::cout << "L308" << std::endl;  // TODO BE debug
           SimpleWaypointPtr junction_end_point = next_waypoints.at(k);
           while (!junction_end_point->CheckJunction()) {
             junction_end_point = junction_end_point->GetNextWaypoint().front();
           }
-          std::cout << "L309" << std::endl;  // TODO BE debug
 
           while (junction_end_point->CheckJunction()) {
             junction_end_point = junction_end_point->GetNextWaypoint().front();
           }
-          std::cout << "L310" << std::endl;  // TODO BE debug
 
           while (next_waypoints.at(k)->DistanceSquared(junction_end_point) < 50.0f) {
             junction_end_point = junction_end_point->GetNextWaypoint().front();
           }
-          std::cout << "L311" << std::endl;  // TODO BE debug
 
           float jep_road_id = junction_end_point->GetWaypoint()->GetRoadId();
           if (jep_road_id == imported_road_id) {
@@ -558,60 +510,47 @@ void LocalizationStage::ImportPath(Path &imported_path, Buffer &waypoint_buffer,
             min_distance = distance;
             selection_index = k;
           }
-          std::cout << "L312" << std::endl;  // TODO BE debug
         }
       } else if (next_waypoints.size() == 0) {
-        std::cout << "L313" << std::endl;  // TODO BE debug
         if (!parameters.GetOSMMode()) {
           std::cout << "This map has dead-end roads, please change the set_open_street_map parameter to true" << std::endl;
         }
         marked_for_removal.push_back(actor_id);
         break;
       }
-      std::cout << "L314" << std::endl;  // TODO BE debug
 
       SimpleWaypointPtr next_wp_selection = next_waypoints.at(selection_index);
 
       // Remove the imported waypoint from the path if it's close to the last one.
       if (next_wp_selection->DistanceSquared(imported) < 30.0f) {
-        std::cout << "L315" << std::endl;  // TODO BE debug
         imported_path.erase(imported_path.begin());
         std::vector<SimpleWaypointPtr> possible_waypoints = next_wp_selection->GetNextWaypoint();
         if (std::find(possible_waypoints.begin(), possible_waypoints.end(), imported) != possible_waypoints.end()) {
-          std::cout << "L316" << std::endl;  // TODO BE debug
           // If the lane is changing, only push the new waypoint
           PushWaypoint(actor_id, track_traffic, waypoint_buffer, next_wp_selection);
         }
-        std::cout << "L317" << std::endl;  // TODO BE debug
         PushWaypoint(actor_id, track_traffic, waypoint_buffer, imported);
-        std::cout << "L318" << std::endl;  // TODO BE debug
         latest_imported = imported_path.front();
         imported = local_map->GetWaypoint(latest_imported);
       } else {
-        std::cout << "L319" << std::endl;  // TODO BE debug
 
         PushWaypoint(actor_id, track_traffic, waypoint_buffer, next_wp_selection);
       }
-      std::cout << "L321" << std::endl;  // TODO BE debug
       i++; // TODO BE debug
-      if (i>1000) // TODO might need to tune. Check how often this occurs.
+      if (i>1000) // TODO BE might need to tune. Check how often this occurs.
       {
         std::cout << "Bad vehicle route caused endless loop." << std::endl;
         marked_for_removal.push_back(actor_id);
         break;  
       }
     }
-    std::cout << "L322" << std::endl;  // TODO BE debug
     if (imported_path.empty()) {
-      std::cout << "L323" << std::endl;  // TODO BE debug
       // Once we are done, check if we can clear the structure.
       parameters.RemoveUploadPath(actor_id, true);
     } else {
-      std::cout << "L324" << std::endl;  // TODO BE debug
       // Otherwise, update the structure with the waypoints that we still need to import.
       parameters.UpdateUploadPath(actor_id, imported_path);
     }
-  std::cout << "L325" << std::endl;  // TODO BE debug
 }
 
 void LocalizationStage::ImportRoute(Route &imported_actions, Buffer &waypoint_buffer, const ActorId actor_id, const float horizon_square) {
