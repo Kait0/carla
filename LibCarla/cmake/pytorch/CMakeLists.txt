@@ -21,6 +21,7 @@ find_package(Python3 REQUIRED)
 set(PYTORCH_CPP_STD_INCLUDES "/usr/include/c++/7")
 
 # @todo These flags need to be compatible with setup.py compilation.
+# TODO BE this does not seem like optimal release flags.
 set(CMAKE_CXX_FLAGS_RELEASE "-DDEBUG -std=c++14 -O2 -fPIC -D_GLIBCXX_USE_CXX11_ABI=0 -I${PYTORCH_CPP_STD_INCLUDES}" CACHE STRING "" FORCE)
  
 # ==============================================================================

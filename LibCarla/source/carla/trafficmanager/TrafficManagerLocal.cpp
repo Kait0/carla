@@ -173,7 +173,6 @@ void TrafficManagerLocal::Run() {
 
     // Skipping velocity update if elapsed time is less than 0.05s in asynchronous, hybrid mode.
     if (!synchronous_mode && hybrid_physics_mode) {
-      std::cout << "571" << std::endl;  // TODO BE debug
 
       TimePoint current_instance = chr::system_clock::now();
       chr::duration<float> elapsed_time = current_instance - previous_update_instance;
@@ -186,7 +185,6 @@ void TrafficManagerLocal::Run() {
 
     // Stop TM from processing the same frame more than once
     if (!synchronous_mode) {
-      std::cout << "572" << std::endl;  // TODO BE debug
       carla::client::Timestamp timestamp = world.GetSnapshot().GetTimestamp();
       if (timestamp.frame == last_frame) {
         continue;
@@ -194,7 +192,6 @@ void TrafficManagerLocal::Run() {
       last_frame = timestamp.frame;
     }
 
-    std::cout << "573" << std::endl;  // TODO BE debug
     std::unique_lock<std::mutex> registration_lock(registration_mutex);
     // Updating simulation state, actor life cycle and performing necessary cleanup.
     std::cout << "574" << std::endl;  // TODO BE debug
@@ -203,12 +200,9 @@ void TrafficManagerLocal::Run() {
 
     // Re-allocating inter-stage communication frames based on changed number of registered vehicles.
     int current_registered_vehicles_state = registered_vehicles.GetState();
-    std::cout << "576" << std::endl;  // TODO BE debug
     unsigned long number_of_vehicles = vehicle_id_list.size();
     if (registered_vehicles_state != current_registered_vehicles_state || number_of_vehicles != registered_vehicles.Size()) {
-      std::cout << "577" << std::endl;  // TODO BE debug
       vehicle_id_list = registered_vehicles.GetIDList();
-      std::cout << "578" << std::endl;  // TODO BE debug
       number_of_vehicles = vehicle_id_list.size();
 
       // Reserve more space if needed.
@@ -220,14 +214,9 @@ void TrafficManagerLocal::Run() {
         tl_frame.reserve(new_frame_capacity);
         control_frame.reserve(new_frame_capacity);
       }
-      std::cout << "579" << std::endl;  // TODO BE debug
-
 
       registered_vehicles_state = registered_vehicles.GetState();
-      std::cout << "580" << std::endl;  // TODO BE debug
     }
-
-    std::cout << "581" << std::endl;  // TODO BE debug
 
     // Reset frames for current cycle.
     localization_frame.clear();
@@ -237,42 +226,33 @@ void TrafficManagerLocal::Run() {
     tl_frame.clear();
     tl_frame.resize(number_of_vehicles);
     control_frame.clear();
-    std::cout << "582" << std::endl;  // TODO BE debug
     // Reserve two frames for each vehicle: one for the ApplyVehicleControl command,
     // and one for the optional SetVehicleLightState command
     control_frame.reserve(2 * number_of_vehicles);
     // Resize to accomodate at least all ApplyVehicleControl commands,
     // that will be inserted by the motion_plan_stage stage.
     control_frame.resize(number_of_vehicles);
-    std::cout << "583" << std::endl;  // TODO BE debug
 
     // Run core operation stages.
     for (unsigned long index = 0u; index < vehicle_id_list.size(); ++index) {
       localization_stage.Update(index);
     }
-    std::cout << "584" << std::endl;  // TODO BE debug
 
     for (unsigned long index = 0u; index < vehicle_id_list.size(); ++index) {
       collision_stage.Update(index);
     }
-    std::cout << "585" << std::endl;  // TODO BE debug
     collision_stage.ClearCycleCache();
-    std::cout << "586" << std::endl;  // TODO BE debug
     vehicle_light_stage.UpdateWorldInfo();
-    std::cout << "587" << std::endl;  // TODO BE debug
     for (unsigned long index = 0u; index < vehicle_id_list.size(); ++index) {
       traffic_light_stage.Update(index);
       motion_plan_stage.Update(index);
       vehicle_light_stage.Update(index);
     }
-    std::cout << "588" << std::endl;  // TODO BE debug
     registration_lock.unlock();
-    std::cout << "589" << std::endl;  // TODO BE debug
 
     // Sending the current cycle's batch command to the simulator.
     if (synchronous_mode) {
       episode_proxy.Lock()->ApplyBatchSync(control_frame, false);
-      std::cout << "512" << std::endl;  // TODO BE debug
       step_end.store(true);
       std::cout << "513" << std::endl;  // TODO BE debug
       //step_end_trigger.notify_one();
