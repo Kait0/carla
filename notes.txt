@@ -15,7 +15,7 @@ make package  ARGS="--config=Debug --no-zip"
 make package  ARGS="--no-zip"
 make package  ARGS="--config=Debug --no-zip --packages=Carla,AdditionalMaps --target-archive=AdditionalMaps --clean-intermediate"
 
-make package  ARGS="--no-zip --packages=Carla,AdditionalMaps"
+make package  ARGS="--python-version=3.10 --no-zip --packages=Carla,AdditionalMaps"
 
 
 make PythonAPI GENERATOR="Visual Studio 17 2022"
@@ -23,7 +23,13 @@ make launch GENERATOR="Visual Studio 17 2022"
 sudo singularity build custom_carla_container.sif make_carla_singularity.def
 singularity exec /home/jaeger/ordnung/promotion/custom_carla_0_9_15/carla/custom_carla_container.sif 
 
-singularity exec --nv --env DISPLAY=$DISPLAY --bind /tmp/.X11-unix:/tmp/.X11-unix /home/jaeger/ordnung/promotion/custom_carla_0_9_15/carla/custom_carla_container.sif make package  ARGS="--no-zip --packages=Carla,AdditionalMaps"
+singularity exec --nv --env DISPLAY=$DISPLAY --bind /tmp/.X11-unix:/tmp/.X11-unix /home/jaeger/ordnung/promotion/custom_carla_0_9_15/carla/custom_carla_container.sif make package  ARGS="--python-version=3.10 --no-zip --packages=Carla,AdditionalMaps"
+
+singularity exec --nv --env DISPLAY=$DISPLAY --bind /tmp/.X11-unix:/tmp/.X11-unix /home/jaeger/ordnung/promotion/custom_carla_0_9_15/carla/custom_carla_container.sif make PythonAPI  ARGS="--python-version=3.10"
+
+
+cp -r /scratch_local/rocky/custom_carla_0_9_15/carla/Dist/AdditionalMaps_0.9.15-402-gb7533ed42-dirty/* /scratch_local/rocky/custom_carla_0_9_15/carla/Dist/CARLA_Debug_0.9.15-402-gb7533ed42-dirty/LinuxNoEditor/
+
 
 objdump -h CarlaUE4-Linux-Shipping | grep debug
 
