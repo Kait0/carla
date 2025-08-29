@@ -63,7 +63,7 @@ def get_libcarla_extensions():
                 '-Wduplicate-enum', '-Wnon-virtual-dtor', '-Wheader-hygiene',
                 '-Wconversion', '-Wfloat-overflow-conversion',
                 '-DBOOST_ERROR_CODE_HEADER_ONLY', '-DLIBCARLA_WITH_PYTHON_SUPPORT',
-                '-stdlib=libstdc++'
+                '-stdlib=libstdc++', '-O3' # TODO BE O3 hacked in.
             ]
             if is_rss_variant_enabled():
                 extra_compile_args += ['-DLIBCARLA_RSS_ENABLED']
