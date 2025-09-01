@@ -201,6 +201,7 @@ void TrafficManagerLocal::Run() {
     // Re-allocating inter-stage communication frames based on changed number of registered vehicles.
     int current_registered_vehicles_state = registered_vehicles.GetState();
     unsigned long number_of_vehicles = vehicle_id_list.size();
+    std::cout << "576" << std::endl;  // TODO BE debug
     if (registered_vehicles_state != current_registered_vehicles_state || number_of_vehicles != registered_vehicles.Size()) {
       vehicle_id_list = registered_vehicles.GetIDList();
       number_of_vehicles = vehicle_id_list.size();
@@ -209,6 +210,7 @@ void TrafficManagerLocal::Run() {
       uint64_t growth_factor = static_cast<uint64_t>(static_cast<float>(number_of_vehicles) * INV_GROWTH_STEP_SIZE);
       uint64_t new_frame_capacity = INITIAL_SIZE + GROWTH_STEP_SIZE * growth_factor;
       if (new_frame_capacity > current_reserved_capacity) {
+        std::cout << "577" << std::endl;  // TODO BE debug
         localization_frame.reserve(new_frame_capacity);
         collision_frame.reserve(new_frame_capacity);
         tl_frame.reserve(new_frame_capacity);
@@ -217,6 +219,7 @@ void TrafficManagerLocal::Run() {
 
       registered_vehicles_state = registered_vehicles.GetState();
     }
+    std::cout << "578" << std::endl;  // TODO BE debug
 
     // Reset frames for current cycle.
     localization_frame.clear();
@@ -232,23 +235,34 @@ void TrafficManagerLocal::Run() {
     // Resize to accomodate at least all ApplyVehicleControl commands,
     // that will be inserted by the motion_plan_stage stage.
     control_frame.resize(number_of_vehicles);
+    std::cout << "579" << std::endl;  // TODO BE debug
 
     // Run core operation stages.
     for (unsigned long index = 0u; index < vehicle_id_list.size(); ++index) {
       localization_stage.Update(index);
     }
+    std::cout << "580" << std::endl;  // TODO BE debug
 
     for (unsigned long index = 0u; index < vehicle_id_list.size(); ++index) {
       collision_stage.Update(index);
     }
+    std::cout << "581" << std::endl;  // TODO BE debug
+
     collision_stage.ClearCycleCache();
+    std::cout << "582" << std::endl;  // TODO BE debug
+
     vehicle_light_stage.UpdateWorldInfo();
+    std::cout << "583" << std::endl;  // TODO BE debug
+
     for (unsigned long index = 0u; index < vehicle_id_list.size(); ++index) {
       traffic_light_stage.Update(index);
       motion_plan_stage.Update(index);
       vehicle_light_stage.Update(index);
     }
+    std::cout << "584" << std::endl;  // TODO BE debug
+
     registration_lock.unlock();
+    std::cout << "585" << std::endl;  // TODO BE debug
 
     // Sending the current cycle's batch command to the simulator.
     if (synchronous_mode) {
