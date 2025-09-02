@@ -69,7 +69,7 @@ void TrafficManager::Tick() {
   int i = 0;
   for(auto& tm : _tm_map) {
     tm.second->SynchronousTick();
-    std::cout << "402 " << std::endl;  // TODO BE debug
+    std::cout << "402" << std::endl;  // TODO BE debug
   }
 }
 
