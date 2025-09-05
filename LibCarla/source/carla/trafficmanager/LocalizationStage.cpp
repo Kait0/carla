@@ -533,7 +533,7 @@ void LocalizationStage::ImportPath(Path &imported_path, Buffer &waypoint_buffer,
       }
 
       counter++; // TODO BE debug
-      if (counter>1000) // TODO BE might need to tune. Check how often this occurs.
+      if (counter>300) // TODO BE might need to tune. Check how often this occurs.
       {
         std::cout << "Bad vehicle route caused endless loop." << std::endl;
         marked_for_removal.push_back(actor_id);
@@ -560,6 +560,8 @@ void LocalizationStage::ImportRoute(Route &imported_actions, Buffer &waypoint_bu
       parameters.RemoveImportedRoute(actor_id, false);
     }
 
+    // TODO BE This function can end in an endless loop.
+    int counter = 0;
     RoadOption next_road_option = static_cast<RoadOption>(imported_actions.front());
     while (!imported_actions.empty() && waypoint_buffer.back()->DistanceSquared(waypoint_buffer.front()) <= horizon_square) {
       // Get the latest point we added to the list. If starting, this will be the one referred to the vehicle's location.
@@ -594,6 +596,14 @@ void LocalizationStage::ImportRoute(Route &imported_actions, Buffer &waypoint_bu
       if (latest_road_option != next_wp_selection->GetRoadOption() && next_road_option == next_wp_selection->GetRoadOption()) {
         imported_actions.erase(imported_actions.begin());
         next_road_option = static_cast<RoadOption>(imported_actions.front());
+      }
+
+      counter++; // TODO BE debug
+      if (counter>300) // TODO BE might need to tune. Check how often this occurs.
+      {
+        std::cout << "Bad vehicle route caused endless loop." << std::endl;
+        marked_for_removal.push_back(actor_id);
+        break;  
       }
     }
     if (imported_actions.empty()) {
