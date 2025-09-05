@@ -209,6 +209,7 @@ namespace road {
     }
   }
 
+  // TODO BE, This function is slow. Analyse performance and speed it up.
   boost::optional<Waypoint> Map::GetWaypoint(
       const geom::Location &pos,
       int32_t lane_type) const {
