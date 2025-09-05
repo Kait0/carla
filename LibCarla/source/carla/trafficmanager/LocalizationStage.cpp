@@ -65,7 +65,7 @@ void LocalizationStage::Update(const unsigned long index) {
       PopWaypoint(actor_id, track_traffic, waypoint_buffer);
     }
   }
-  std::cout << "10" << std::endl;
+  // std::cout << "10" << std::endl;
 
   bool is_at_junction_entrance = false;
   if (!waypoint_buffer.empty()) {
@@ -106,7 +106,7 @@ void LocalizationStage::Update(const unsigned long index) {
       PopWaypoint(actor_id, track_traffic, waypoint_buffer, false);
     }
   }
-  std::cout << "11" << std::endl;
+  // std::cout << "11" << std::endl;
 
   // Initializing buffer if it is empty.
   if (waypoint_buffer.empty()) {
@@ -145,7 +145,7 @@ void LocalizationStage::Update(const unsigned long index) {
       lane_change_direction = false;
     }
   }
-  std::cout << "12" << std::endl;
+  // std::cout << "12" << std::endl;
 
   const SimpleWaypointPtr front_waypoint = waypoint_buffer.front();
   const float lane_change_distance = SQUARE(std::max(10.0f * vehicle_speed, INTER_LANE_CHANGE_DISTANCE));
@@ -184,19 +184,19 @@ void LocalizationStage::Update(const unsigned long index) {
   Path imported_path = parameters.GetCustomPath(actor_id);
   Route imported_actions = parameters.GetImportedRoute(actor_id);
   // We are effectively importing a path.
-  std::cout << "13" << std::endl;
+  // std::cout << "13" << std::endl;
 
   if (!imported_path.empty()) {
-      std::cout << "14" << std::endl;
+      // std::cout << "14" << std::endl;
     ImportPath(imported_path, waypoint_buffer, actor_id, horizon_square);
   } else if (!imported_actions.empty()) {
-    std::cout << "15" << std::endl;
+    // std::cout << "15" << std::endl;
     ImportRoute(imported_actions, waypoint_buffer, actor_id, horizon_square);
   }
 
   // Populating the buffer through randomly chosen waypoints.
   else {
-    std::cout << "16" << std::endl;
+    // std::cout << "16" << std::endl;
     int i = 0;
     while (waypoint_buffer.back()->DistanceSquared(waypoint_buffer.front()) <= horizon_square) {
       SimpleWaypointPtr furthest_waypoint = waypoint_buffer.back();
@@ -221,7 +221,7 @@ void LocalizationStage::Update(const unsigned long index) {
       }
     }
   }
-  std::cout << "17" << std::endl;
+  // std::cout << "17" << std::endl;
   ExtendAndFindSafeSpace(actor_id, is_at_junction_entrance, waypoint_buffer);
 
   // Editing output array
@@ -237,7 +237,7 @@ void LocalizationStage::Update(const unsigned long index) {
     output.safe_point = nullptr;
   }
 
-  std::cout << "18" << std::endl;
+  // std::cout << "18" << std::endl;
   // Updating geodesic grid position for actor.
   track_traffic.UpdateGridPosition(actor_id, waypoint_buffer);
 }
@@ -544,14 +544,14 @@ void LocalizationStage::ImportPath(Path &imported_path, Buffer &waypoint_buffer,
         PushWaypoint(actor_id, track_traffic, waypoint_buffer, next_wp_selection);
       }
       counter++; // TODO BE debug
-      if (counter>300) // TODO BE might need to tune. Check how often this occurs.
+      if (counter>100) // TODO BE might need to tune. Check how often this occurs.
       {
         std::cout << "Bad vehicle route caused endless loop." << std::endl;
         marked_for_removal.push_back(actor_id);
         break;  
       }
     }
-    std::cout << "Number of iters: " << counter;
+    // std::cout << "Number of iters: " << counter << std::endl;
     if (imported_path.empty()) {
       // Once we are done, check if we can clear the structure.
       parameters.RemoveUploadPath(actor_id, true);
@@ -611,7 +611,7 @@ void LocalizationStage::ImportRoute(Route &imported_actions, Buffer &waypoint_bu
       }
       
       counter++; // TODO BE debug
-      if (counter>300) // TODO BE might need to tune. Check how often this occurs.
+      if (counter>100) // TODO BE might need to tune. Check how often this occurs.
       {
         std::cout << "Bad vehicle route caused endless loop." << std::endl;
         marked_for_removal.push_back(actor_id);
