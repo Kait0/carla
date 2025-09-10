@@ -99,14 +99,6 @@ private:
   TrafficManagerServer server;
   /// Switch to turn on / turn off traffic manager.
   std::atomic<bool> run_traffic_manger{true};
-  /// Flags to signal step begin and end.
-  std::atomic<bool> step_begin{false};
-  std::atomic<bool> step_end{false};
-  /// Mutex for progressing synchronous execution.
-  // std::mutex step_execution_mutex;
-  /// Condition variables for progressing synchronous execution.
-  // std::condition_variable step_begin_trigger; // TODO BE: Edit
-  // std::condition_variable step_end_trigger; // TODO BE: Edit
   /// Single worker thread for sequential execution of sub-components.
   std::unique_ptr<std::thread> worker_thread;
   /// Randomization seed.
@@ -141,6 +133,9 @@ public:
 
   /// Initiates thread to run the TrafficManager sequentially.
   void Run();
+
+  // Does one TM step.
+  void Step(size_t& last_frame);
 
   /// To stop the TrafficManager.
   void Stop();
