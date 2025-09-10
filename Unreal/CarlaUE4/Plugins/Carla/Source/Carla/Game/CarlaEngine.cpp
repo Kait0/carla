@@ -34,6 +34,8 @@
 #include <cstdlib>
 #include <cerrno>
 #include <iostream>
+#include <chrono>  // TODO BE revert
+#include <iostream> // TODO BE revert
 
 // =============================================================================
 // -- Static local methods -----------------------------------------------------
@@ -297,11 +299,24 @@ void FCarlaEngine::OnPreTick(UWorld *, ELevelTick TickType, float DeltaSeconds)
       }
 
       // process RPC commands
-      do
+      // TODO BE Sleep here to avoid wasting CPU ressources in a Spinlock
+      if (bSynchronousMode)
       {
-        Server.RunSome(1u);
+        do
+        {
+          Server.RunSome(1u);
+          std::this_thread::sleep_for(std::chrono::microseconds(100));
+        }
+        while (bSynchronousMode && !Server.TickCueReceived());
       }
-      while (bSynchronousMode && !Server.TickCueReceived());
+      else
+      {
+        do
+        {
+          Server.RunSome(1u);
+        }
+        while (bSynchronousMode && !Server.TickCueReceived());
+      }
     }
     else
     {
