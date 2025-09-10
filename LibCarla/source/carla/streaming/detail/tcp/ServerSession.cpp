@@ -95,7 +95,7 @@ namespace tcp {
         if (_server.IsSynchronousMode()) {
           // wait until previous message has been sent
           while (_is_writing) {
-            std::this_thread::yield();
+            std::this_thread::yield();  // TODO BE This busy waiting loop might cost lots of CPU ressources.
           }
         } else {
           // ignore this message

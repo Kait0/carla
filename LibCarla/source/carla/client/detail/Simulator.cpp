@@ -55,8 +55,11 @@ namespace detail {
     bool result = true;
     auto start = std::chrono::system_clock::now();
     std::cout << "301" << std::endl;  // TODO BE debug
+    // This loop often spins for multiple 6 milliseconds, yielding is waisting ressources.
+    // Since I do not understand CARLA deep enough to implement a sophisticated awakening mechanism with futures etc.
+    // I use sleep(100µs) instead. The overhead should be negligible but this technically limits CARLA to 10000 FPS.
     while (frame > episode.GetState()->GetTimestamp().frame) {
-      std::this_thread::yield();
+      std::this_thread::sleep_for(std::chrono::microseconds(100));
       auto end = std::chrono::system_clock::now();
       auto diff = std::chrono::duration_cast<std::chrono::milliseconds>(end-start);
 
