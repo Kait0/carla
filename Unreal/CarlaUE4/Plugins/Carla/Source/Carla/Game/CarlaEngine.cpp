@@ -300,23 +300,14 @@ void FCarlaEngine::OnPreTick(UWorld *, ELevelTick TickType, float DeltaSeconds)
 
       // process RPC commands
       // TODO BE Sleep here to avoid wasting CPU ressources in a Spinlock
-      if (bSynchronousMode)
+      do
       {
-        do
-        {
-          Server.RunSome(1u);
+        Server.RunSome(1u);
+        if (bSynchronousMode) {
           std::this_thread::sleep_for(std::chrono::microseconds(100));
         }
-        while (bSynchronousMode && !Server.TickCueReceived());
       }
-      else
-      {
-        do
-        {
-          Server.RunSome(1u);
-        }
-        while (bSynchronousMode && !Server.TickCueReceived());
-      }
+      while (bSynchronousMode && !Server.TickCueReceived());
     }
     else
     {
