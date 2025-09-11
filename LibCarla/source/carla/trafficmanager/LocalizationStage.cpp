@@ -65,18 +65,20 @@ void LocalizationStage::Update(const unsigned long index) {
       PopWaypoint(actor_id, track_traffic, waypoint_buffer);
     }
   }
-  // std::cout << "10" << std::endl;
+  std::cout << "10" << std::endl;
 
   bool is_at_junction_entrance = false;
   if (!waypoint_buffer.empty()) {
     // Purge passed waypoints.
     float dot_product = DeviationDotProduct(vehicle_location, heading_vector, waypoint_buffer.front()->GetLocation());
+    std::cout << "20" << std::endl;
     while (dot_product <= 0.0f && !waypoint_buffer.empty()) {
       PopWaypoint(actor_id, track_traffic, waypoint_buffer);
       if (!waypoint_buffer.empty()) {
         dot_product = DeviationDotProduct(vehicle_location, heading_vector, waypoint_buffer.front()->GetLocation());
       }
     }
+    std::cout << "21" << std::endl;
 
     if (!waypoint_buffer.empty()) {
       // Determine if the vehicle is at the entrance of a junction.
@@ -99,14 +101,16 @@ void LocalizationStage::Update(const unsigned long index) {
     }
 
     // Purge waypoints too far from the front of the buffer, but not if it has reached a junction.
+    std::cout << "22" << std::endl;
     while (!is_at_junction_entrance
            && !waypoint_buffer.empty()
            && waypoint_buffer.back()->DistanceSquared(waypoint_buffer.front()) > horizon_square + horizon_square
            && !waypoint_buffer.back()->CheckJunction()) {
       PopWaypoint(actor_id, track_traffic, waypoint_buffer, false);
     }
+    std::cout << "23" << std::endl;
   }
-  // std::cout << "11" << std::endl;
+  std::cout << "11" << std::endl;
 
   // Initializing buffer if it is empty.
   if (waypoint_buffer.empty()) {
@@ -145,7 +149,7 @@ void LocalizationStage::Update(const unsigned long index) {
       lane_change_direction = false;
     }
   }
-  // std::cout << "12" << std::endl;
+  std::cout << "12" << std::endl;
 
   const SimpleWaypointPtr front_waypoint = waypoint_buffer.front();
   const float lane_change_distance = SQUARE(std::max(10.0f * vehicle_speed, INTER_LANE_CHANGE_DISTANCE));
@@ -184,20 +188,20 @@ void LocalizationStage::Update(const unsigned long index) {
   Path imported_path = parameters.GetCustomPath(actor_id);
   Route imported_actions = parameters.GetImportedRoute(actor_id);
   // We are effectively importing a path.
-  // std::cout << "13" << std::endl;
+  std::cout << "13" << std::endl;
 
   if (!imported_path.empty()) {
-      // std::cout << "14" << std::endl;
+    std::cout << "14" << std::endl;
     ImportPath(imported_path, waypoint_buffer, actor_id, horizon_square);
   } else if (!imported_actions.empty()) {
-    // std::cout << "15" << std::endl;
+    std::cout << "15" << std::endl;
     ImportRoute(imported_actions, waypoint_buffer, actor_id, horizon_square);
   }
 
   // Populating the buffer through randomly chosen waypoints.
   else {
-    // std::cout << "16" << std::endl;
-    int i = 0;
+    std::cout << "16" << std::endl;
+    int counter = 0;
     while (waypoint_buffer.back()->DistanceSquared(waypoint_buffer.front()) <= horizon_square) {
       SimpleWaypointPtr furthest_waypoint = waypoint_buffer.back();
       std::vector<SimpleWaypointPtr> next_waypoints = furthest_waypoint->GetNextWaypoint();
@@ -219,9 +223,16 @@ void LocalizationStage::Update(const unsigned long index) {
         // Found a loop, stop. Don't use zero distance as there can be two waypoints at the same location
         break;
       }
+      counter++;
+      // TODO BE This function can end in an endless loop.
+      if (counter > 100) {
+        std::cerr << "Bad vehicle route caused endless loop in LocalizationStage::Update." << std::endl;
+        marked_for_removal.push_back(actor_id);
+        break;
+      }
     }
   }
-  // std::cout << "17" << std::endl;
+  std::cout << "17" << std::endl;
   ExtendAndFindSafeSpace(actor_id, is_at_junction_entrance, waypoint_buffer);
 
   // Editing output array
@@ -237,7 +248,7 @@ void LocalizationStage::Update(const unsigned long index) {
     output.safe_point = nullptr;
   }
 
-  // std::cout << "18" << std::endl;
+  std::cout << "18" << std::endl;
   // Updating geodesic grid position for actor.
   track_traffic.UpdateGridPosition(actor_id, waypoint_buffer);
 }
@@ -546,12 +557,11 @@ void LocalizationStage::ImportPath(Path &imported_path, Buffer &waypoint_buffer,
       counter++; // TODO BE debug
       if (counter>100) // TODO BE might need to tune. Check how often this occurs.
       {
-        std::cout << "Bad vehicle route caused endless loop." << std::endl;
+        std::cerr << "Bad vehicle route caused endless loop in ImportPath." << std::endl;
         marked_for_removal.push_back(actor_id);
         break;  
       }
     }
-    // std::cout << "Number of iters: " << counter << std::endl;
     if (imported_path.empty()) {
       // Once we are done, check if we can clear the structure.
       parameters.RemoveUploadPath(actor_id, true);
@@ -613,7 +623,7 @@ void LocalizationStage::ImportRoute(Route &imported_actions, Buffer &waypoint_bu
       counter++; // TODO BE debug
       if (counter>100) // TODO BE might need to tune. Check how often this occurs.
       {
-        std::cout << "Bad vehicle route caused endless loop." << std::endl;
+        std::cerr << "Bad vehicle route caused endless loop in ImportRoute." << std::endl;
         marked_for_removal.push_back(actor_id);
         break;  
       }
