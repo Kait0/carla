@@ -308,9 +308,9 @@ public:
   /// Method to provide synchronous tick.
   bool SynchronousTick() {
     TrafficManagerBase* tm_ptr = GetTM(_port);
-    std::cout << "405" << std::endl;  // TODO BE debug
+    // std::cout << "405" << std::endl;  // TODO BE debug
     if(tm_ptr != nullptr){
-      std::cout << "406" << std::endl;  // TODO BE debug
+      // std::cout << "406" << std::endl;  // TODO BE debug
       return tm_ptr->SynchronousTick();
     }
     return false;

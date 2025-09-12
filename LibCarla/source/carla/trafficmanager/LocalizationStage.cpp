@@ -65,20 +65,20 @@ void LocalizationStage::Update(const unsigned long index) {
       PopWaypoint(actor_id, track_traffic, waypoint_buffer);
     }
   }
-  std::cout << "10" << std::endl;
+  // std::cout << "10" << std::endl; // TODO BE comment
 
   bool is_at_junction_entrance = false;
   if (!waypoint_buffer.empty()) {
     // Purge passed waypoints.
     float dot_product = DeviationDotProduct(vehicle_location, heading_vector, waypoint_buffer.front()->GetLocation());
-    std::cout << "20" << std::endl;
+    // std::cout << "20" << std::endl; // TODO BE comment
     while (dot_product <= 0.0f && !waypoint_buffer.empty()) {
       PopWaypoint(actor_id, track_traffic, waypoint_buffer);
       if (!waypoint_buffer.empty()) {
         dot_product = DeviationDotProduct(vehicle_location, heading_vector, waypoint_buffer.front()->GetLocation());
       }
     }
-    std::cout << "21" << std::endl;
+    // std::cout << "21" << std::endl; // TODO BE comment
 
     if (!waypoint_buffer.empty()) {
       // Determine if the vehicle is at the entrance of a junction.
@@ -101,16 +101,16 @@ void LocalizationStage::Update(const unsigned long index) {
     }
 
     // Purge waypoints too far from the front of the buffer, but not if it has reached a junction.
-    std::cout << "22" << std::endl;
+    // std::cout << "22" << std::endl; // TODO BE comment
     while (!is_at_junction_entrance
            && !waypoint_buffer.empty()
            && waypoint_buffer.back()->DistanceSquared(waypoint_buffer.front()) > horizon_square + horizon_square
            && !waypoint_buffer.back()->CheckJunction()) {
       PopWaypoint(actor_id, track_traffic, waypoint_buffer, false);
     }
-    std::cout << "23" << std::endl;
+    // std::cout << "23" << std::endl; // TODO BE comment
   }
-  std::cout << "11" << std::endl;
+  // std::cout << "11" << std::endl; // TODO BE comment
 
   // Initializing buffer if it is empty.
   if (waypoint_buffer.empty()) {
@@ -149,7 +149,7 @@ void LocalizationStage::Update(const unsigned long index) {
       lane_change_direction = false;
     }
   }
-  std::cout << "12" << std::endl;
+  // std::cout << "12" << std::endl; // TODO BE comment
 
   const SimpleWaypointPtr front_waypoint = waypoint_buffer.front();
   const float lane_change_distance = SQUARE(std::max(10.0f * vehicle_speed, INTER_LANE_CHANGE_DISTANCE));
@@ -188,19 +188,19 @@ void LocalizationStage::Update(const unsigned long index) {
   Path imported_path = parameters.GetCustomPath(actor_id);
   Route imported_actions = parameters.GetImportedRoute(actor_id);
   // We are effectively importing a path.
-  std::cout << "13" << std::endl;
+  // std::cout << "13" << std::endl;  // TODO BE
 
   if (!imported_path.empty()) {
-    std::cout << "14" << std::endl;
+    // std::cout << "14" << std::endl; // TODO BE comment
     ImportPath(imported_path, waypoint_buffer, actor_id, horizon_square);
   } else if (!imported_actions.empty()) {
-    std::cout << "15" << std::endl;
+    // std::cout << "15" << std::endl; // TODO BE comment
     ImportRoute(imported_actions, waypoint_buffer, actor_id, horizon_square);
   }
 
   // Populating the buffer through randomly chosen waypoints.
   else {
-    std::cout << "16" << std::endl;
+    // std::cout << "16" << std::endl; // TODO BE comment
     int counter = 0;
     while (waypoint_buffer.back()->DistanceSquared(waypoint_buffer.front()) <= horizon_square) {
       SimpleWaypointPtr furthest_waypoint = waypoint_buffer.back();
@@ -232,7 +232,7 @@ void LocalizationStage::Update(const unsigned long index) {
       }
     }
   }
-  std::cout << "17" << std::endl;
+  // std::cout << "17" << std::endl; // TODO BE comment
   ExtendAndFindSafeSpace(actor_id, is_at_junction_entrance, waypoint_buffer);
 
   // Editing output array
@@ -248,7 +248,7 @@ void LocalizationStage::Update(const unsigned long index) {
     output.safe_point = nullptr;
   }
 
-  std::cout << "18" << std::endl;
+  // std::cout << "18" << std::endl; // TODO BE comment
   // Updating geodesic grid position for actor.
   track_traffic.UpdateGridPosition(actor_id, waypoint_buffer);
 }

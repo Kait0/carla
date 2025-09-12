@@ -137,7 +137,7 @@ void TrafficManagerLocal::SetupLocalMap() {
 }
 
 void TrafficManagerLocal::Start() {
-  std::cout << "0005" << std::endl;  // TODO BE debug
+  // std::cout << "0005" << std::endl;  // TODO BE debug
   run_traffic_manger.store(true);
 
   localization_frame.reserve(INITIAL_SIZE);
@@ -156,7 +156,7 @@ void TrafficManagerLocal::Step(size_t& last_frame) {
   bool synchronous_mode = parameters.GetSynchronousMode();
   bool hybrid_physics_mode = parameters.GetHybridPhysicsMode();
   parameters.SetMaxBoundaries(20.0f, episode_proxy.Lock()->GetEpisodeSettings().actor_active_distance);
-  std::cout << "500" << std::endl;  // TODO BE debug
+  // std::cout << "500" << std::endl;  // TODO BE debug
 
   // Skipping velocity update if elapsed time is less than 0.05s in asynchronous, hybrid mode.
   if (!synchronous_mode && hybrid_physics_mode) {
@@ -181,14 +181,14 @@ void TrafficManagerLocal::Step(size_t& last_frame) {
 
   std::unique_lock<std::mutex> registration_lock(registration_mutex);
   // Updating simulation state, actor life cycle and performing necessary cleanup.
-  std::cout << "574" << std::endl;  // TODO BE debug
+  // std::cout << "574" << std::endl;  // TODO BE debug
   alsm.Update();
-  std::cout << "575" << std::endl;  // TODO BE debug
+  // std::cout << "575" << std::endl;  // TODO BE debug
 
   // Re-allocating inter-stage communication frames based on changed number of registered vehicles.
   int current_registered_vehicles_state = registered_vehicles.GetState();
   unsigned long number_of_vehicles = vehicle_id_list.size();
-  std::cout << "576" << std::endl;  // TODO BE debug
+  // std::cout << "576" << std::endl;  // TODO BE debug
   if (registered_vehicles_state != current_registered_vehicles_state || number_of_vehicles != registered_vehicles.Size()) {
     vehicle_id_list = registered_vehicles.GetIDList();
     number_of_vehicles = vehicle_id_list.size();
@@ -197,7 +197,7 @@ void TrafficManagerLocal::Step(size_t& last_frame) {
     uint64_t growth_factor = static_cast<uint64_t>(static_cast<float>(number_of_vehicles) * INV_GROWTH_STEP_SIZE);
     uint64_t new_frame_capacity = INITIAL_SIZE + GROWTH_STEP_SIZE * growth_factor;
     if (new_frame_capacity > current_reserved_capacity) {
-      std::cout << "577" << std::endl;  // TODO BE debug
+      // std::cout << "577" << std::endl;  // TODO BE debug
       localization_frame.reserve(new_frame_capacity);
       collision_frame.reserve(new_frame_capacity);
       tl_frame.reserve(new_frame_capacity);
@@ -206,7 +206,7 @@ void TrafficManagerLocal::Step(size_t& last_frame) {
 
     registered_vehicles_state = registered_vehicles.GetState();
   }
-  std::cout << "578" << std::endl;  // TODO BE debug
+  // std::cout << "578" << std::endl;  // TODO BE debug
 
   // Reset frames for current cycle.
   localization_frame.clear();
@@ -222,39 +222,39 @@ void TrafficManagerLocal::Step(size_t& last_frame) {
   // Resize to accomodate at least all ApplyVehicleControl commands,
   // that will be inserted by the motion_plan_stage stage.
   control_frame.resize(number_of_vehicles);
-  std::cout << "579" << std::endl;  // TODO BE debug
+  // std::cout << "579" << std::endl;  // TODO BE debug
 
   // Run core operation stages.
   for (unsigned long index = 0u; index < vehicle_id_list.size(); ++index) {
     localization_stage.Update(index);
   }
-  std::cout << "580" << std::endl;  // TODO BE debug
+  // std::cout << "580" << std::endl;  // TODO BE debug
 
   for (unsigned long index = 0u; index < vehicle_id_list.size(); ++index) {
     collision_stage.Update(index);
   }
-  std::cout << "581" << std::endl;  // TODO BE debug
+  // std::cout << "581" << std::endl;  // TODO BE debug
 
   collision_stage.ClearCycleCache();
-  std::cout << "582" << std::endl;  // TODO BE debug
+  // std::cout << "582" << std::endl;  // TODO BE debug
 
   vehicle_light_stage.UpdateWorldInfo();
-  std::cout << "583" << std::endl;  // TODO BE debug
+  // std::cout << "583" << std::endl;  // TODO BE debug
 
   for (unsigned long index = 0u; index < vehicle_id_list.size(); ++index) {
     traffic_light_stage.Update(index);
     motion_plan_stage.Update(index);
     vehicle_light_stage.Update(index);
   }
-  std::cout << "584" << std::endl;  // TODO BE debug
+  // std::cout << "584" << std::endl;  // TODO BE debug
 
   registration_lock.unlock();
-  std::cout << "585" << std::endl;  // TODO BE debug
+  // std::cout << "585" << std::endl;  // TODO BE debug
 
   // Sending the current cycle's batch command to the simulator.
   if (synchronous_mode) {
     episode_proxy.Lock()->ApplyBatchSync(control_frame, false);
-    std::cout << "513" << std::endl;  // TODO BE debug
+    // std::cout << "513" << std::endl;  // TODO BE debug
   } else {
     if (control_frame.size() > 0){
       episode_proxy.Lock()->ApplyBatchSync(control_frame, false);
@@ -273,16 +273,16 @@ void TrafficManagerLocal::Run() {
 
 bool TrafficManagerLocal::SynchronousTick() {
   if (parameters.GetSynchronousMode()) {
-    std::cout << "207" << std::endl;  // TODO BE debug
+    // std::cout << "207" << std::endl;  // TODO BE debug
     size_t last_frame = 0;
     Step(last_frame);  // Do one step of TM.
-    std::cout << "210" << std::endl;  // TODO BE debug
+    // std::cout << "210" << std::endl;  // TODO BE debug
   }
   return true;
 }
 
 void TrafficManagerLocal::Stop() {
-  std::cout << "0003" << std::endl;  // TODO BE debug
+  // std::cout << "0003" << std::endl;  // TODO BE debug
   run_traffic_manger.store(false);
 
   bool synchronous_mode = parameters.GetSynchronousMode();
@@ -294,7 +294,7 @@ void TrafficManagerLocal::Stop() {
       worker_thread.reset();
     }
   }
-  std::cout << "0004" << std::endl;  // TODO BE debug
+  // std::cout << "0004" << std::endl;  // TODO BE debug
 
   vehicle_id_list.clear();
   registered_vehicles.Clear();
@@ -319,7 +319,7 @@ void TrafficManagerLocal::Stop() {
 }
 
 void TrafficManagerLocal::Release() {
-  std::cout << "0001" << std::endl;  // TODO BE debug
+  // std::cout << "0001" << std::endl;  // TODO BE debug
   Stop();
 
   local_map.reset();
@@ -334,13 +334,13 @@ void TrafficManagerLocal::Reset() {
 }
 
 void TrafficManagerLocal::RegisterVehicles(const std::vector<ActorPtr> &vehicle_list) {
-  std::cout << "u591" << std::endl;  // TODO BE debug
+  // std::cout << "u591" << std::endl;  // TODO BE debug
   std::lock_guard<std::mutex> registration_lock(registration_mutex);
   registered_vehicles.Insert(vehicle_list);
 }
 
 void TrafficManagerLocal::UnregisterVehicles(const std::vector<ActorPtr> &actor_list) {
-  std::cout << "u590" << std::endl;  // TODO BE debug
+  // std::cout << "u590" << std::endl;  // TODO BE debug
   std::lock_guard<std::mutex> registration_lock(registration_mutex);
   std::vector<ActorId> actor_id_list;
   for (auto &actor : actor_list) {
@@ -488,7 +488,7 @@ bool TrafficManagerLocal::CheckAllFrozen(TLGroup tl_to_freeze) {
 }
 
 void TrafficManagerLocal::SetSynchronousMode(bool mode) {
-  std::cout << "0007" << std::endl;  // TODO BE debug
+  // std::cout << "0007" << std::endl;  // TODO BE debug
   const bool previously_synchronous = parameters.GetSynchronousMode();
   parameters.SetSynchronousMode(mode);
   if (mode == previously_synchronous) { // Same mode as before, do nothing.
