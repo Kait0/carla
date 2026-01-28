@@ -17,6 +17,7 @@
 
 #include <atomic>
 #include <thread>
+#include <chrono>
 
 // TODO BE debug
 #include <boost/stacktrace.hpp>
@@ -96,7 +97,7 @@ namespace tcp {
           // wait until previous message has been sent
           while (_is_writing) {
             // TODO BE This busy waiting loop might cost lots of CPU ressources, although it seems the code is never called.
-            std::this_thread::yield();
+            std::this_thread::sleep_for(std::chrono::microseconds(100));
           }
         } else {
           // ignore this message
