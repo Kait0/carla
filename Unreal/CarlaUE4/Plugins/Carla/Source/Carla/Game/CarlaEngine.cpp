@@ -303,9 +303,9 @@ void FCarlaEngine::OnPreTick(UWorld *, ELevelTick TickType, float DeltaSeconds)
       do
       {
         Server.RunSome(1u);
-        // if (bSynchronousMode) {
-        //   std::this_thread::sleep_for(std::chrono::microseconds(100));
-        // }
+        if (bSynchronousMode) {
+          std::this_thread::sleep_for(std::chrono::microseconds(50));
+        }
       }
       while (bSynchronousMode && !Server.TickCueReceived());
     }
