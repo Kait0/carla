@@ -16,6 +16,8 @@ make package  ARGS="--config=Debug --no-zip --packages=Carla,AdditionalMaps"
 make package  ARGS="--no-zip --packages=Carla,AdditionalMaps"
 make package  ARGS="--config=Debug --no-zip --packages=Carla,AdditionalMaps --target-archive=AdditionalMaps --clean-intermediate"
 
+rsync -av --remove-source-files /scratch_local/rocky/custom_carla_0_9_15/carla/Dist/AdditionalMaps_0.9.15-431-g23eac0359/ /scratch_local/rocky/custom_carla_0_9_15/carla/Dist/CARLA_Shipping_0.9.15-431-g23eac0359/LinuxNoEditor/
+
 sudo singularity build custom_carla_container.sif make_carla_singularity.def
 singularity exec custom_carla_container.sif make package  ARGS="--no-zip --packages=Carla,AdditionalMaps"
 
